@@ -1,0 +1,48 @@
+AdbShell [2022年6月17日 下午1:13:31]: 耗时65ms
+	execute: 
+		adb devices, 
+	result: 
+		ExecResult{existValue='0', out='List of devices attached
+
+', error='', exception='0'}
+Box [2022年6月17日 下午1:13:31]: 设备列表为空，请到开发者模式下打开USB调试
+Box [2022年6月17日 下午1:13:31]: 	华为 设置->关于手机->版本号    设置=>系统和更新=>开发人员选项
+Box [2022年6月17日 下午1:13:31]: 	小米 设置=>我的设备=>全部参数=>MIUI 版本    设置=>更多设置=>开发者选项
+Box [2022年6月17日 下午1:13:31]: 	oppo 设置=>关于手机=>版本信息=>版本号    设置=>其他设置=>开发者选项
+Box [2022年6月17日 下午1:13:31]: 	vivo 设置=>关于手机=>软件版本号    设置=>系统管理=>开发者选项
+Box [2022年6月17日 下午1:13:31]: 	三星 设置=>关于手机=>版本号    设置=>系统和更新=>开发人员选项
+Box [2022年6月17日 下午1:13:31]: =========complete========
+AdbShell [2022年6月17日 下午1:13:47]: 耗时143ms
+	execute: 
+		adb shell am start -a com.cdblue.DeviceRegistration, 
+	result: 
+		ExecResult{existValue='1', out='null', error='adb.exe: no devices/emulators found
+', exception='1'}
+Box [2022年6月17日 下午1:13:47]: =========complete========
+AdbShell [2022年6月17日 下午1:18:53]: 耗时66ms
+	execute: 
+		adb devices, 
+	result: 
+		existValue: 0
+		out: List of devices attached
+
+
+		error: 
+Box [2022年6月17日 下午1:18:53]: 设备列表为空，请到开发者模式下打开USB调试
+Box [2022年6月17日 下午1:18:53]: 	华为 设置->关于手机->版本号    设置=>系统和更新=>开发人员选项
+Box [2022年6月17日 下午1:18:53]: 	小米 设置=>我的设备=>全部参数=>MIUI 版本    设置=>更多设置=>开发者选项
+Box [2022年6月17日 下午1:18:53]: 	oppo 设置=>关于手机=>版本信息=>版本号    设置=>其他设置=>开发者选项
+Box [2022年6月17日 下午1:18:53]: 	vivo 设置=>关于手机=>软件版本号    设置=>系统管理=>开发者选项
+Box [2022年6月17日 下午1:18:53]: 	三星 设置=>关于手机=>版本号    设置=>系统和更新=>开发人员选项
+Box [2022年6月17日 下午1:18:53]: =========complete========
+AdbShell [2022年6月17日 下午1:19:26]: 耗时37ms
+	execute: 
+		adb shell am start -a com.cdblue.DeviceRegistration, 
+	result: 
+		existValue: 1
+		out: null
+		error: adb.exe: no devices/emulators found
+
+Box [2022年6月17日 下午1:19:26]: =========complete========
+Box [2022年6月17日 下午1:21:44]: {"className":".TestDeviceAdminReceiver", "packageName":"com.raintang.dpmtest"}
+Box [2022年6月17日 下午1:21:44]: =========complete========

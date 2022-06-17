@@ -1,0 +1,6 @@
+{
+  "logPath": ".\\ConsoleBox\\log.txt",
+  "installApkPath": "",
+  "adminComponentPkgName": "com.raintang.dpmtest",
+  "adminComponentClsName": ".TestDeviceAdminReceiver"
+}

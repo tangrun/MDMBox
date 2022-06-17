@@ -1,0 +1,25 @@
+
+plugins {
+    id 'java-library'
+    id "com.github.johnrengelman.shadow" version "6.0.0"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+shadowJar{
+    minimize()
+    manifest{
+        attributes.put("Main-Class","com.tangrun.mdm.consolebox.Box")
+    }
+}
+
+
+dependencies {
+    implementation project(path: ':Shell')
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.guava:guava:31.1-jre'
+//    implementation 'com.google.guava:guava:31.1-android'
+}

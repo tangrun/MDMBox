@@ -1,0 +1,6 @@
+
+rootProject.name = "MDMBox"
+include ':SocketBoxDemo'
+include ':Shell'
+include ':ConsoleBox'
+include ':SocketBox'
