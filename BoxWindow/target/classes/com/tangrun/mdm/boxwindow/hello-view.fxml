@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="TOP_CENTER" minHeight="540.0" minWidth="320.0" spacing="20.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tangrun.mdm.boxwindow.MainController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <HBox>
+        <Label text="当前连接设备：" />
+        <Label fx:id="tv_device_info" text="Label" />
+    </HBox>
+    <Button fx:id="bt_refresh_device" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="刷新设备连接状态">
+        <padding>
+            <Insets bottom="16.0" top="16.0" />
+        </padding>
+        <VBox.margin>
+            <Insets />
+        </VBox.margin>
+    </Button>
+    <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="取消当前设备已激活应用">
+        <padding>
+            <Insets bottom="16.0" top="16.0" />
+        </padding>
+    </Button>
+    <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="开始激活">
+        <padding>
+            <Insets bottom="16.0" top="16.0" />
+        </padding>
+    </Button>
+   <ScrollPane prefHeight="200.0" prefWidth="200.0">
+     <content>
+       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+            <children>
+               <Button layoutX="45.0" layoutY="35.0" mnemonicParsing="false" text="Button" />
+            </children>
+         </AnchorPane>
+     </content>
+   </ScrollPane>
+</VBox>
