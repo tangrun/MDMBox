@@ -7,6 +7,8 @@ import java.util.*;
 
 public interface ShellApi {
 
+    ShellApiExecResult<Map<String,String>> getProps();
+
     /**
      * 安装apk
      * @param path
@@ -55,6 +57,8 @@ public interface ShellApi {
      * @return
      */
     ShellApiExecResult<Void> setEnabled(String packageName, boolean enable);
+
+    ShellApiExecResult<Void> setAppHide(String packageName, boolean hide);
 
     /**
      * 获取应用包名列表

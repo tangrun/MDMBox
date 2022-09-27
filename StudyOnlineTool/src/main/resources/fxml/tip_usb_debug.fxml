@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="16.0" style="-fx-border-color: #b6b6b6;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tangrun.mdm.boxwindow.controller.TipUSBDebugGuideController">
+    <children>
+        <AnchorPane>
+            <children>
+                <Label text="连接提示" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+                <ImageView fitHeight="20.0" fitWidth="20.0" onMouseClicked="#onCloseClick" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <image>
+                        <Image url="@../static/ic_clear.png" />
+                    </image>
+                </ImageView>
+            </children>
+            <padding>
+                <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+            </padding>
+        </AnchorPane>
+        <AnchorPane />
+        <HBox alignment="CENTER" spacing="32.0">
+            <children>
+                <GridPane hgap="8.0" vgap="8.0">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <ImageView fx:id="ivHW" fitHeight="500.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../static/usb_debug_hw.gif" />
+                     </image></ImageView>
+                        <Label text="华为示例" GridPane.rowIndex="1" />
+                    </children>
+                </GridPane>
+            <VBox spacing="16.0">
+               <children>
+                    <Label text="连接电脑，必须打开USB调试模式">
+                        <font>
+                            <Font name="System Bold" size="16.0" />
+                        </font>
+                    </Label>
+                      <Label lineSpacing="8.0" text="第一步：切换MTP模式或者MIDI模式&#10;  （1）下拉通知栏&#10;  （2）找到“正在通过USB充电”选项并进入&#10;  （3）找到“设备文件管理”MTP模式或者MIDI模式&#10;&#10;第二步：开启USB调试模式&#10;  （1）打开“设置”，下滑找到并进入“关于手机”&#10;  （2）点击10次“版本号”后，会提示“您已处于开发者模式”&#10;  （3）返回“设置”界面，进入“开发者选项”&#10;  （4）先开启“开发者选项”开关，再下滑找到“USB调试”勾选并确定&#10;  （5）开启成功准备连接" wrapText="true">
+                          <font>
+                              <Font size="16.0" />
+                          </font>
+                      </Label>
+                  <Label text="视频演示教程">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="8.0" />
+                     </VBox.margin>
+                  </Label>
+                  <HBox spacing="8.0">
+                     <children>
+                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBHuaweiClick" styleClass="label_content_area" text="华为" textFill="BLUE" underline="true" wrapText="true">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </Label>
+                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBSanxingClick" styleClass="label_content_area" text="三星" textFill="BLUE" underline="true" wrapText="true">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </Label>
+                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBXiaomiClick" styleClass="label_content_area" text="小米" textFill="BLUE" underline="true" wrapText="true">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </Label>
+                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBOppoClick" styleClass="label_content_area" text="OPPO" textFill="BLUE" underline="true" wrapText="true">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </Label>
+                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBVivoClick" styleClass="label_content_area" text="VIVO" textFill="BLUE" underline="true" wrapText="true">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+            </VBox>
+            </children>
+            <padding>
+                <Insets left="64.0" right="64.0" />
+            </padding>
+            <VBox.margin>
+                <Insets />
+            </VBox.margin>
+        </HBox>
+        <Button mnemonicParsing="false" onMouseClicked="#onCloseClick" style="-fx-background-color: #008dff;" text="我知道了" textFill="WHITE">
+            <padding>
+                <Insets bottom="12.0" left="64.0" right="64.0" top="12.0" />
+            </padding>
+         <VBox.margin>
+            <Insets bottom="32.0" />
+         </VBox.margin>
+        </Button>
+    </children>
+</VBox>

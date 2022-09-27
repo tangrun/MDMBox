@@ -24,6 +24,26 @@ public class ShellApiAndroidSocketImpl implements ShellApi {
         log = debug;
     }
 
+    Pattern patternProps = Pattern.compile("\\[([\\S\\s]+?)\\]: \\[([\\S\\s]+?)\\]");
+    @Override
+    public ShellApiExecResult<Map<String, String>> getProps() {
+        return shellApply("getprop", new Function<ShellExecResult, ShellApiExecResult<Map<String, String>>>() {
+            @Override
+            public ShellApiExecResult<Map<String, String>> apply(ShellExecResult var1) {
+                if (var1.existOk()) {
+                    Matcher matcher = patternProps.matcher(var1.out);
+                    Map<String,String> map = new HashMap<>();
+                    while (matcher.find()) {
+                        String key = matcher.group(1);
+                        String value = matcher.group(2);
+                        map.put(key,value);
+                    }
+                    return ShellApiExecResult.success(map);
+                }else return ShellApiExecResult.fail(var1.error);
+            }
+        });
+    }
+
     public ShellApiExecResult<Void> installApp(String path) {
         return shellApply("pm install " + path, new Function<ShellExecResult, ShellApiExecResult<Void>>() {
             @Override
@@ -124,6 +144,17 @@ public class ShellApiAndroidSocketImpl implements ShellApi {
         });
     }
 
+    public ShellApiExecResult<Void> setAppHide(String packageOrClassName, boolean hide) {
+        return shellApply(String.format("pm %s %s", hide ? "hide" : "unhide", packageOrClassName), new Function<ShellExecResult, ShellApiExecResult<Void>>() {
+            @Override
+            public ShellApiExecResult<Void> apply(ShellExecResult shellAdbShellExecResult) {
+                if (shellAdbShellExecResult.existOk()) {
+                    return ShellApiExecResult.success(null);
+                }
+                return ShellApiExecResult.fail(shellAdbShellExecResult.error);
+            }
+        });
+    }
 
     Pattern patternPackage = Pattern.compile("package:(((?!package:).)+)");
 

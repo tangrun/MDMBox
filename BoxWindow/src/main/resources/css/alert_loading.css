@@ -1,0 +1,36 @@
+
+.dialog-pane {
+
+    -fx-background-color: #ffffff;
+    -fx-min-width: 360;
+    -fx-pref-width: 360;
+    -fx-max-width: 360;
+    -fx-padding: 0px 8px;
+
+    -fx-border-color: #b6b6b6;
+}
+
+.header-panel .label {
+    visibility: hidden;
+}
+.header-panel {
+    /*visibility: hidden;*/
+    -fx-max-height: 0px;
+    -fx-pref-height: 0px;
+}
+.button-bar {
+    /*visibility: hidden;*/
+    -fx-max-height: 0px;
+    -fx-pref-height: 0px;
+}
+
+.dialog-content-root {
+}
+
+.dialog-content-label {
+}
+
+.dialog-content-progress {
+    -fx-pref-height: 50;
+    -fx-pref-width: 50;
+}

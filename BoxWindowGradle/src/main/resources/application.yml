@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    #    url: jdbc:sqlite:./test.db
+    url: jdbc:h2:file:./data;FILE_LOCK=NO
+    username: cdblue
+    password: Cdblue123123!!
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        show_sql: false
+        globally_quoted_identifiers: true
+    database: h2
+logging:
+  config: classpath:log4j2.xml

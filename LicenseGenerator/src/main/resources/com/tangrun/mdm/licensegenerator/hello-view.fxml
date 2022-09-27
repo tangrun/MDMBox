@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import com.tangrun.mdm.licensegenerator.DateTimePicker?>
+<!--<?import com.browniebytes.javafx.control.DateTimePicker?>-->
+
+
+<VBox maxHeight="1.7976931348623157E308" prefWidth="420.0" spacing="16.0" fx:controller="com.tangrun.mdm.licensegenerator.HelloController" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" spacing="16.0">
+         <children>
+            <Label fx:id="tvTitle" maxWidth="1.7976931348623157E308" text="激活码生成器" HBox.hgrow="ALWAYS">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="btHistory" text="历史" onMouseClicked="#onHistoryClick">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="btExit" onMouseClicked="#onExit" text="退出">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <Label text="授权应用名*" />
+      <TextField fx:id="etName" promptText="应用名">
+         <padding>
+            <Insets bottom="16.0" left="8.0" right="8.0" top="16.0" />
+         </padding>
+         <VBox.margin>
+            <Insets top="-10.0" />
+         </VBox.margin>
+      </TextField>
+      <Label text="授权应用包名*" />
+      <TextField fx:id="etPackage" promptText="如：com.xxx.xxxx">
+         <padding>
+            <Insets bottom="16.0" left="8.0" right="8.0" top="16.0" />
+         </padding>
+         <VBox.margin>
+            <Insets top="-10.0" />
+         </VBox.margin>
+      </TextField>
+      <Label text="授权应用组件名*" />
+      <TextField fx:id="etComponent" promptText="如：com.xxx.xxxx.xx.admin">
+         <padding>
+            <Insets bottom="16.0" left="8.0" right="8.0" top="16.0" />
+         </padding>
+         <VBox.margin>
+            <Insets top="-10.0" />
+         </VBox.margin>
+      </TextField>
+      <Label text="备注信息" />
+      <TextField fx:id="etRemark" promptText="备注信息">
+         <padding>
+            <Insets bottom="16.0" left="8.0" right="8.0" top="16.0" />
+         </padding>
+         <VBox.margin>
+            <Insets top="-10.0" />
+         </VBox.margin>
+      </TextField>
+      <Label text="机器码*" />
+      <TextArea fx:id="etDeviceCode" promptText="机器码" maxWidth="1.7976931348623157E308" wrapText="true" prefRowCount="3">
+         <VBox.margin>
+            <Insets top="-10.0" />
+         </VBox.margin>
+      </TextArea>
+      <Label text="有效期*" />
+      <DateTimePicker fx:id="etExpireTime" maxWidth="1.7976931348623157E308" minHeight="50.0">
+         <VBox.margin>
+            <Insets top="-10.0" />
+         </VBox.margin>
+      </DateTimePicker>
+      <Button fx:id="btGenerate" maxWidth="1.7976931348623157E308" onMouseClicked="#onGenerateClick" mnemonicParsing="false" text="生成">
+         <VBox.margin>
+            <Insets top="0.0" />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="16.0" top="16.0" />
+         </padding>
+      </Button>
+      <Label text="激活码" />
+      <TextArea fx:id="etLicense" promptText="激活码" wrapText="true" maxWidth="1.7976931348623157E308" prefRowCount="3">
+         <VBox.margin>
+            <Insets top="-10.0" />
+         </VBox.margin>
+      </TextArea>
+   </children>
+   <padding>
+      <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+   </padding>
+</VBox>

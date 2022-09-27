@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      spacing="16.0" style="-fx-border-color: #b6b6b6;" xmlns="http://javafx.com/javafx/8.0.171"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.tangrun.mdm.boxwindow.controller.TipDeviceConnectController">
+    <children>
+        <AnchorPane>
+            <children>
+                <Label text="连接提示" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <font>
+                        <Font size="16.0"/>
+                    </font>
+                </Label>
+                <ImageView fitHeight="20.0" fitWidth="20.0" onMouseClicked="#onCloseClick" pickOnBounds="true"
+                           preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                           AnchorPane.topAnchor="0.0">
+                    <image>
+                        <Image url="@../static/ic_clear.png"/>
+                    </image>
+                </ImageView>
+            </children>
+            <padding>
+                <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+            </padding>
+        </AnchorPane>
+        <Label alignment="CENTER" text="识别不到手机，请按以下方式重连">
+            <font>
+                <Font name="System Bold" size="18.0"/>
+            </font>
+        </Label>
+        <GridPane hgap="8.0" vgap="16.0">
+            <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"/>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"/>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"/>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <children>
+                <ImageView fitHeight="150.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../static/tip_connect_device_1.png"/>
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                    <image>
+                        <Image url="@../static/tip_connect_device_2.png"/>
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="400.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                    <image>
+                        <Image url="@../static/tip_connect_device_3.png"/>
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="400.0" onMouseClicked="#onUSBDebugCLick" pickOnBounds="true" preserveRatio="true"
+                           GridPane.columnIndex="3">
+                    <image>
+                        <Image url="@../static/tip_connect_device_4.png"/>
+                    </image>
+                </ImageView>
+                <Label text="1 更换数据线或USB接口" GridPane.rowIndex="1"/>
+                <Label text="2 重启电脑或手机" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Label alignment="CENTER" contentDisplay="CENTER" prefWidth="200.0" text="3 设置USB连接方式为文件传输，或者MIDI设备模式"
+                       textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                <Label text="点击查看打开方法" onMouseClicked="#onUSBDebugCLick" textFill="BLUE" underline="true" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                    <graphic>
+                        <Label text="4 打开USB调试模式 "/>
+                    </graphic>
+                </Label>
+            </children>
+            <padding>
+                <Insets left="16.0" right="16.0"/>
+            </padding>
+            <VBox.margin>
+                <Insets bottom="16.0" top="16.0"/>
+            </VBox.margin>
+        </GridPane>
+        <Button mnemonicParsing="false" onMouseClicked="#onCloseClick" style="-fx-background-color: #008dff;"
+                text="我知道了" textFill="WHITE">
+            <padding>
+                <Insets bottom="12.0" left="64.0" right="64.0" top="12.0"/>
+            </padding>
+            <VBox.margin>
+                <Insets top="16.0"/>
+            </VBox.margin>
+        </Button>
+    </children>
+    <padding>
+        <Insets bottom="32.0"/>
+    </padding>
+</VBox>

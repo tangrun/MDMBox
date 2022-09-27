@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.tangrun.mdm</groupId>
+    <artifactId>LicenseGenerator</artifactId>
+    <version>1.0</version>
+    <name>LicenseGenerator</name>
+
+    <properties>
+
+
+        <build.app.name>激活助手</build.app.name>
+        <build.app.version>1.0</build.app.version>
+        <build.mainClass>com.tangrun.mdm.licensegenerator.HelloApplication</build.mainClass>
+        <build.mainModuleClass>LicenseGenerator/com.tangrun.mdm.licensegenerator.HelloApplication</build.mainModuleClass>
+<!--        <build.icon>${project.basedir}/src/main/resources/application.ico</build.icon>-->
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <junit.version>5.9.0</junit.version>
+        <spring.boot>3.0.0-M4</spring.boot>
+        <!--        <spring.boot>2.7.2</spring.boot>-->
+        <javafx>18.0.2</javafx>
+        <lombok>1.18.24</lombok>
+
+        <!-- 文件拷贝时的编码 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- 编译时的编码 -->
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+    </properties>
+
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>projectRepository</id>-->
+<!--            <url>file://${basedir}/lib</url>-->
+<!--        </repository>-->
+<!--    </repositories>-->
+
+    <dependencies>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafx}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok}</version>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                    <encoding>UTF-8</encoding>
+                    <!--                    lombok-->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.24</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <!--                    <compilerArgs>-->
+                    <!--                        <arg>-Xlint:deprecation</arg>-->
+                    <!--                    </compilerArgs>-->
+                </configuration>
+            </plugin>
+
+            <!--            javafx启动-->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <executions>
+                    <execution>
+                        <!-- Default configuration for running with: mvn clean javafx:run -->
+                        <id>default-cli</id>
+                        <configuration>
+                            <mainClass>${build.mainModuleClass}</mainClass>
+                            <launcher>app</launcher>
+                            <jlinkZipName>app</jlinkZipName>
+                            <jlinkImageName>app</jlinkImageName>
+                            <noManPages>true</noManPages>
+                            <stripDebug>true</stripDebug>
+                            <noHeaderFiles>true</noHeaderFiles>
+                            <options>
+                                <!--                                <option>&#45;&#45;add-opens</option>-->
+                                <!--                                <option>java.base/java.lang=ALL-UNNAMED</option>-->
+                                <!--                                <option>&#45;&#45;add-opens</option>-->
+                                <!--                                <option>com.tangrun.mdm.boxwindow/com.tangrun.mdm.boxwindow=ALL-UNNAMED</option>-->
+                                <!--                                <option>&#45;&#45;add-opens</option>-->
+                                <!--                                <option>spring.core/org.springframework.cglib.core.ReflectUtils=ALL-UNNAMED</option>-->
+                            </options>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--            打包本模块jar-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>${build.mainClass}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!--            复制依赖lib-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <excludeScope>test</excludeScope>
+                            <excludeScope>provided</excludeScope>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--            jpackage打包-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>image</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>jpackage</executable>
+                            <workingDirectory>${project.basedir}</workingDirectory>
+                            <arguments>
+                                <argument>--name</argument>
+                                <argument>${build.app.name}</argument>
+                                <argument>--app-version</argument>
+                                <argument>${build.app.version}</argument>
+<!--                                <argument>&#45;&#45;icon</argument>-->
+<!--                                <argument>${build.icon}</argument>-->
+
+                                <argument>--type</argument>
+                                <argument>app-image</argument>
+
+<!--                                <argument>&#45;&#45;main-jar</argument>-->
+<!--                                <argument>${project.build.directory}/${project.artifactId}-${project.version}.jar-->
+<!--                                </argument>-->
+<!--                                <argument>&#45;&#45;main-class</argument>-->
+<!--                                <argument>${build.mainClass}</argument>-->
+
+
+<!--                                <argument>&#45;&#45;app-image</argument>-->
+<!--                                <argument>${project.build.directory}/app</argument>-->
+                                <argument>--input</argument>
+                                <argument>${project.build.directory}/lib/</argument>
+                                <argument>--module-path</argument>
+                                <argument>${project.build.directory}/lib/</argument>
+                                <argument>--module</argument>
+                                <argument>${build.mainModuleClass}</argument>
+
+                                <argument>--temp</argument>
+                                <argument>${project.build.directory}/jPackageOutTemp</argument>
+                                <argument>--dest</argument>
+                                <argument>${project.build.directory}/jPackageOut</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+
+
+        </plugins>
+    </build>
+
+    <!--    <repositories>-->
+    <!--        <repository>-->
+    <!--            <id>spring-milestones</id>-->
+    <!--            <name>Spring Milestones</name>-->
+    <!--            <url>https://repo.spring.io/milestone</url>-->
+    <!--            <snapshots>-->
+    <!--                <enabled>false</enabled>-->
+    <!--            </snapshots>-->
+    <!--        </repository>-->
+    <!--    </repositories>-->
+
+</project>

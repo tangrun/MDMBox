@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.tangrun.mdm</groupId>
+    <artifactId>StudyOnlineTool</artifactId>
+    <version>1.0</version>
+    <name>StudyOnlineTool</name>
+
+    <properties>
+
+
+        <build.app.name>网课助手</build.app.name>
+        <build.app.version>1.0</build.app.version>
+        <build.mainClass>com.tangrun.mdm.boxwindow.Launcher</build.mainClass>
+        <build.mainModuleClass>StudyOnlineTool/com.tangrun.mdm.boxwindow.Launcher</build.mainModuleClass>
+        <build.icon>${project.basedir}/src/main/resources/application.ico</build.icon>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <junit.version>5.9.0</junit.version>
+        <spring.boot>3.0.0-M4</spring.boot>
+        <!--        <spring.boot>2.7.2</spring.boot>-->
+        <javafx>18.0.2</javafx>
+        <lombok>1.18.24</lombok>
+
+        <!-- 文件拷贝时的编码 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- 编译时的编码 -->
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+    </properties>
+
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>projectRepository</id>-->
+<!--            <url>file://${basedir}/lib</url>-->
+<!--        </repository>-->
+<!--    </repositories>-->
+
+    <dependencies>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafx}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+            <version>1.3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/commons-exec-1.3.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.5.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/com.google.zxing.javase-3.5.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.5.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/com.google.zxing-3.5.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jai-imageio</groupId>
+            <artifactId>jai-imageio-core</artifactId>
+            <version>1.4.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/jai.imageio.core-1.4.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.82</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/jcommander-1.82.jar</systemPath>
+        </dependency>
+
+
+<!--        <dependency>-->
+<!--            <groupId>org.apache.commons</groupId>-->
+<!--            <artifactId>commons-exec</artifactId>-->
+<!--            <version>1.3-local</version>-->
+<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.alibaba</groupId>-->
+        <!--            <artifactId>fastjson</artifactId>-->
+        <!--            <version>2.0.10</version>-->
+        <!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.squareup.okhttp3</groupId>-->
+<!--            <artifactId>okhttp</artifactId>-->
+<!--            <version>4.10.0</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.google.guava</groupId>-->
+        <!--            <artifactId>guava</artifactId>-->
+        <!--            <version>31.1-jre</version>-->
+        <!--        </dependency>-->
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.1.214</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/h2-2.1.214.jar</systemPath>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.hibernate.orm</groupId>-->
+<!--            <artifactId>hibernate-core</artifactId>-->
+<!--            <version>6.1.1.Final</version>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.18.0</version>
+        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.slf4j</groupId>-->
+        <!--            <artifactId>slf4j-api</artifactId>-->
+        <!--            <version>2.0.0-alpha7</version>-->
+        <!--        </dependency>-->
+
+        <!--        <dependency>-->
+        <!--            <groupId>javax</groupId>-->
+        <!--            <artifactId>javaee-api</artifactId>-->
+        <!--            <version>6.0</version>-->
+        <!--            <scope>provided</scope>-->
+        <!--        </dependency>-->
+
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter</artifactId>-->
+        <!--            <version>${spring.boot}</version>-->
+        <!--            <exclusions>-->
+        <!--                <exclusion>-->
+        <!--                    <groupId>org.springframework.boot</groupId>-->
+        <!--                    <artifactId>spring-boot-starter-logging</artifactId>-->
+        <!--                </exclusion>-->
+        <!--            </exclusions>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-data-jpa</artifactId>-->
+        <!--            <version>${spring.boot}</version>-->
+        <!--            <exclusions>-->
+        <!--                <exclusion>-->
+        <!--                    <groupId>org.springframework.boot</groupId>-->
+        <!--                    <artifactId>spring-boot-starter-logging</artifactId>-->
+        <!--                </exclusion>-->
+        <!--            </exclusions>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-log4j2</artifactId>-->
+        <!--            <version>${spring.boot}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-test</artifactId>-->
+        <!--            <version>${spring.boot}</version>-->
+        <!--            <scope>test</scope>-->
+        <!--            <exclusions>-->
+        <!--                <exclusion>-->
+        <!--                    <groupId>org.springframework.boot</groupId>-->
+        <!--                    <artifactId>spring-boot-starter-logging</artifactId>-->
+        <!--                </exclusion>-->
+        <!--            </exclusions>-->
+        <!--        </dependency>-->
+
+        <!--        没有module-info的时候要引入-->
+        <!--        <dependency>-->
+        <!--            <groupId>javax.xml.bind</groupId>-->
+        <!--            <artifactId>jaxb-api</artifactId>-->
+        <!--            <version>2.4.0-b180830.0359</version>-->
+        <!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok}</version>
+            <scope>provided</scope>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.junit.jupiter</groupId>-->
+<!--            <artifactId>junit-jupiter-api</artifactId>-->
+<!--            <version>${junit.version}</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.junit.jupiter</groupId>-->
+<!--            <artifactId>junit-jupiter-engine</artifactId>-->
+<!--            <version>${junit.version}</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                    <encoding>UTF-8</encoding>
+                    <!--                    lombok-->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.24</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <!--                    <compilerArgs>-->
+                    <!--                        <arg>-Xlint:deprecation</arg>-->
+                    <!--                    </compilerArgs>-->
+                </configuration>
+            </plugin>
+
+            <!--            javafx启动-->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <executions>
+                    <execution>
+                        <!-- Default configuration for running with: mvn clean javafx:run -->
+                        <id>default-cli</id>
+                        <configuration>
+                            <mainClass>${build.mainModuleClass}</mainClass>
+                            <launcher>app</launcher>
+                            <jlinkZipName>app</jlinkZipName>
+                            <jlinkImageName>app</jlinkImageName>
+                            <noManPages>true</noManPages>
+                            <stripDebug>true</stripDebug>
+                            <noHeaderFiles>true</noHeaderFiles>
+                            <options>
+                                <!--                                <option>&#45;&#45;add-opens</option>-->
+                                <!--                                <option>java.base/java.lang=ALL-UNNAMED</option>-->
+                                <!--                                <option>&#45;&#45;add-opens</option>-->
+                                <!--                                <option>com.tangrun.mdm.boxwindow/com.tangrun.mdm.boxwindow=ALL-UNNAMED</option>-->
+                                <!--                                <option>&#45;&#45;add-opens</option>-->
+                                <!--                                <option>spring.core/org.springframework.cglib.core.ReflectUtils=ALL-UNNAMED</option>-->
+                            </options>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--            打包本模块jar-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>${build.mainClass}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!--            复制依赖lib-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <excludeScope>test</excludeScope>
+                            <excludeScope>provided</excludeScope>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--            jpackage打包-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>image</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>jpackage</executable>
+                            <workingDirectory>${project.basedir}</workingDirectory>
+                            <arguments>
+                                <argument>--name</argument>
+                                <argument>${build.app.name}</argument>
+                                <argument>--app-version</argument>
+                                <argument>${build.app.version}</argument>
+                                <argument>--icon</argument>
+                                <argument>${build.icon}</argument>
+
+                                <argument>--type</argument>
+                                <argument>app-image</argument>
+
+<!--                                <argument>&#45;&#45;main-jar</argument>-->
+<!--                                <argument>${project.build.directory}/${project.artifactId}-${project.version}.jar-->
+<!--                                </argument>-->
+<!--                                <argument>&#45;&#45;main-class</argument>-->
+<!--                                <argument>${build.mainClass}</argument>-->
+
+
+<!--                                <argument>&#45;&#45;app-image</argument>-->
+<!--                                <argument>${project.build.directory}/app</argument>-->
+                                <argument>--input</argument>
+<!--                                <argument>${project.build.directory}/doc/</argument>-->
+                                <argument>${project.basedir}/app</argument>
+                                <argument>--module-path</argument>
+                                <argument>${project.build.directory}/lib/</argument>
+                                <argument>--module</argument>
+                                <argument>${build.mainModuleClass}</argument>
+
+                                <argument>--temp</argument>
+                                <argument>${project.build.directory}/jPackageOutTemp</argument>
+                                <argument>--dest</argument>
+                                <argument>${project.build.directory}/jPackageOut</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>installer</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>jpackage</executable>
+                            <workingDirectory>${project.basedir}</workingDirectory>
+                            <arguments>
+                                <argument>--name</argument>
+                                <argument>${build.app.name}</argument>
+                                <argument>--app-version</argument>
+                                <argument>${build.app.version}</argument>
+                                <argument>--icon</argument>
+                                <argument>${build.icon}</argument>
+
+                                <argument>--type</argument>
+                                <argument>exe</argument>
+
+                                <!--                                <argument>&#45;&#45;main-jar</argument>-->
+                                <!--                                <argument>${project.build.directory}/${project.artifactId}-${project.version}.jar-->
+                                <!--                                </argument>-->
+                                <!--                                <argument>&#45;&#45;main-class</argument>-->
+                                <!--                                <argument>${build.mainClass}</argument>-->
+
+
+                                <!--                                <argument>&#45;&#45;app-image</argument>-->
+                                <!--                                <argument>${project.build.directory}/app</argument>-->
+                                <argument>--input</argument>
+                                <argument>${project.basedir}/app/</argument>
+                                <argument>--module-path</argument>
+                                <argument>${project.build.directory}/lib/</argument>
+                                <argument>--module</argument>
+                                <argument>${build.mainModuleClass}</argument>
+
+                                <argument>--temp</argument>
+                                <argument>${project.build.directory}/jPackageOutExeTemp</argument>
+                                <argument>--dest</argument>
+                                <argument>${project.build.directory}/jPackageOutExe</argument>
+
+                                <argument>--win-dir-chooser</argument>
+                                <argument>--win-menu</argument>
+                                <argument>--win-shortcut</argument>
+                                <argument>--win-shortcut-prompt</argument>
+                                <argument>--vendor</argument>
+                                <argument>cdblue</argument>
+<!--                                <argument>&#45;&#45;win-per-user-install</argument>-->
+<!--                                <argument>&#45;&#45;win-console</argument>-->
+                                <argument>--win-upgrade-uuid</argument>
+                                <argument>fd64bb54-afde-4224-9a6c-2092b8c2ec8b</argument>
+
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+
+
+        </plugins>
+    </build>
+
+    <!--    <repositories>-->
+    <!--        <repository>-->
+    <!--            <id>spring-milestones</id>-->
+    <!--            <name>Spring Milestones</name>-->
+    <!--            <url>https://repo.spring.io/milestone</url>-->
+    <!--            <snapshots>-->
+    <!--                <enabled>false</enabled>-->
+    <!--            </snapshots>-->
+    <!--        </repository>-->
+    <!--    </repositories>-->
+
+</project>

@@ -3,8 +3,7 @@ package com.tangrun.mdm.consolebox;
 
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
-import com.tangrun.mdm.shell.core.ShellApi;
-import com.tangrun.mdm.shell.core.ShellApiExecResult;
+import com.tangrun.mdm.shell.core.*;
 import com.tangrun.mdm.shell.enums.PackageFilterParam;
 import com.tangrun.mdm.shell.impl.ShellApiCmdImpl;
 import com.tangrun.mdm.shell.impl.ShellExecutorCmdImpl;
@@ -40,7 +39,39 @@ public class Box {
         }
         config = new Gson().fromJson(com.google.common.io.Files.asCharSource(file, Charset.defaultCharset()).read(), Config.class);
         createLog();
-        adbShell = new ShellApiCmdImpl(logSteam, new ShellExecutorCmdImpl());
+        ShellApiCmdImpl adbShell1 = new ShellApiCmdImpl(new ShellExecutorCmdImpl());
+        adbShell1.setInterceptor(new ShellInterceptor() {
+            @Override
+            public ShellExecResult execute(String command, ShellExecutor executor) {
+                ShellExecResult result = executor.execute(command);
+
+                long time = System.currentTimeMillis();
+                if (logSteam != null) {
+                    time = System.currentTimeMillis() - time;
+                    try {
+                        logSteam.write(String.format(Locale.getDefault(),"AdbShell [%s]: 耗时%dms" +
+                                        "\n\texecute: " +
+                                        "\n\t\t%s, " +
+                                        "\n\tresult: " +
+                                        "\n\t\texistValue: %s" +
+                                        "\n\t\tout: %s" +
+                                        "\n\t\terror: %s" +
+                                        "\n",
+                                DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())),
+                                time,
+                                command,
+                                result.exitValue, result.out, result.error
+                        ));
+                        logSteam.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                return result;
+            }
+        });
+        adbShell = adbShell1;
         mComponentProfileOwner = new ComponentName(config.adminComponentPkgName, config.adminComponentClsName);
         mScanner = new Scanner(System.in);
     }

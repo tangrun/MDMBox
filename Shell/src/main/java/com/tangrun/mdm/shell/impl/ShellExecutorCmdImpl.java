@@ -2,6 +2,7 @@ package com.tangrun.mdm.shell.impl;
 
 import com.tangrun.mdm.shell.core.ShellExecResult;
 import com.tangrun.mdm.shell.core.ShellExecutor;
+import com.tangrun.mdm.shell.core.ShellInterceptor;
 import org.apache.commons.exec.*;
 
 import java.io.ByteArrayOutputStream;

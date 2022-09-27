@@ -1,0 +1,17 @@
+<Configuration xmlns="http://logging.apache.org/log4j/2.0/config">
+    <Properties>
+        <Property name="pattern">%d %-5p [%t] %C{2} (%F:%L) - %m%n</Property>
+    </Properties>
+    <Appenders>
+        <Console name="console" target="System.out">
+            <PatternLayout pattern="${pattern}"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.tangrun.mdm.boxwindow" level="debug"/>
+        <Logger name="com.tangrun.mdm.boxwindow.impl.ShellExecuteLogger" level="info"/>
+        <Root level="info">
+            <AppenderRef ref="console"/>
+        </Root>
+    </Loggers>
+</Configuration>

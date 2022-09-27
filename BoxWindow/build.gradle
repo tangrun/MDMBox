@@ -1,62 +1,252 @@
 plugins {
-    id 'java'
-    id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.10'
-    id 'org.beryx.jlink' version '2.24.1'
+    id "application"
+    id "java"
+    id "org.beryx.jlink" version "2.24.4"
+    id "org.openjfx.javafxplugin" version "0.0.10"
+    id "com.gluonhq.gluonfx-gradle-plugin" version "1.0.7"
 }
 
 group 'com.tangrun.mdm'
 version '1.0-SNAPSHOT'
 
 repositories {
-    mavenCentral()
+    maven { url "https://maven.aliyun.com/repository/central"}
+    maven { url 'https://maven.aliyun.com/repository/google' }
 }
 
-ext {
-    junitVersion = '5.8.1'
+//java {
+//    sourceCompatibility = JavaVersion.VERSION_17
+//    targetCompatibility = JavaVersion.VERSION_17
+//}
+
+// 获取当前系统平台
+def platform
+if (org.gradle.internal.os.OperatingSystem.current().windows) {
+    platform = "win"
+} else if (org.gradle.internal.os.OperatingSystem.current().linux) {
+    platform = "linux"
+} else if (org.gradle.internal.os.OperatingSystem.current().macOsX) {
+    platform = "mac"
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
+mainClassName = "com.tangrun.mdm.boxwindow.Launcher"
 application {
-    mainModule = 'com.tangrun.mdm'
-    mainClass = 'com.tangrun.mdm.boxwindow.HelloApplication'
+    applicationName = "JavaFXSample123"
+    mainModule.set("com.tangrun.mdm")
+    mainClass.set("com.tangrun.mdm.boxwindow.Launcher")
+
+}
+
+run{
+    applicationDefaultJvmArgs = [
+            // Java16的ZGC似乎有大幅度优化
+            "-XX:+UseZGC",
+            // 当遇到空指针异常时显示更详细的信息
+            "-XX:+ShowCodeDetailsInExceptionMessages",
+            "-Dsun.java2d.opengl=true",
+            // 不添加此参数，打包成exe后，https协议的网络图片资源无法加载
+            "-Dhttps.protocols=TLSv1.1,TLSv1.2",
+            "--add-exports=javafx.graphics/com.sun.javafx.tk=ALL-UNNAMED",
+//            "--add-exports=javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix",
+//            "--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED"
+    ]
+    jvmArgs = [
+            // Java16的ZGC似乎有大幅度优化
+            "-XX:+UseZGC",
+            // 当遇到空指针异常时显示更详细的信息
+            "-XX:+ShowCodeDetailsInExceptionMessages",
+            "-Dsun.java2d.opengl=true",
+            // 不添加此参数，打包成exe后，https协议的网络图片资源无法加载
+            "-Dhttps.protocols=TLSv1.1,TLSv1.2",
+            "--add-exports=javafx.graphics/com.sun.javafx.tk=ALL-UNNAMED",
+//            "--add-exports=javafx.controls/com.sun.javafx.scene.control.behavior=com.jfoenix",
+//            "--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED"
+    ]
 }
 
 javafx {
-    version = '11.0.2'
-    modules = ['javafx.controls', 'javafx.fxml']
+    version = "17"
+    modules = ["javafx.controls",  "javafx.fxml" ,"javafx.base" , "javafx.graphics"]
+}
+
+// JavaFX 版本定义
+ext {
+    junitVersion = '5.9.0'
+    javaFXVersion = "17.0.0.1"
+    spring_boot = "2.7.2"
 }
 
 dependencies {
-    implementation('org.kordamp.ikonli:ikonli-javafx:12.2.0')
-    implementation('org.kordamp.bootstrapfx:bootstrapfx-core:0.4.0')
-    implementation project(path: ':Shell')
+    implementation "org.openjfx:javafx-base:${javaFXVersion}:${platform}"
+    implementation "org.openjfx:javafx-controls:${javaFXVersion}:${platform}"
+    implementation "org.openjfx:javafx-graphics:${javaFXVersion}:${platform}"
+    implementation "org.openjfx:javafx-fxml:${javaFXVersion}:${platform}"
+//    implementation "org.openjfx:javafx-swing:${javaFXVersion}:${platform}"
+//    implementation "org.openjfx:javafx-media:${javaFXVersion}:${platform}"
+//    implementation "org.openjfx:javafx-web:${javaFXVersion}:${platform}"
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+//    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+//    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+//    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+
+    implementation 'org.apache.commons:commons-exec:1.3'
 
     implementation 'com.alibaba.fastjson2:fastjson2:2.0.10'
     implementation 'com.google.guava:guava:31.1-jre'
+
+    implementation 'com.h2database:h2:2.1.214'
+    implementation ("org.springframework.boot:spring-boot-starter-data-jpa:${spring_boot}"){
+        exclude module: 'spring-boot-starter-logging'
+    }
+    implementation "org.springframework.boot:spring-boot-starter-log4j2:${spring_boot}"
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${spring_boot}"
+
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    testImplementation 'junit:junit:4.13.2'
 }
 
-test {
-    useJUnitPlatform()
+
+gluonfx {
+    compilerArgs = [
+            "--allow-incomplete-classpath"
+    ]
 }
 
 jlink {
-    imageZip = project.file("${buildDir}/distributions/app-${javafx.platform.classifier}.zip")
-    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+    options.set(List.of("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages"))
+
     launcher {
-        name = 'app'
+        name = application.applicationName
+        imageName.set(application.applicationName)
+    }
+
+    imageZip.set(project.file("${project.buildDir}/image-zip/JavaFXSample.zip"))
+
+    jpackage {
+        outputDir = "build-package"
+        imageName = application.applicationName
+        skipInstaller = false
+        installerName = application.applicationName
+        appVersion = version.toString()
+
+        if (org.gradle.internal.os.OperatingSystem.current().windows) {
+            icon = "src/main/resources/application.ico"
+            installerOptions += ["--win-dir-chooser", "--win-menu", "--win-shortcut", "--win-menu-group", application.applicationName]
+        }
+        if (org.gradle.internal.os.OperatingSystem.current().macOsX) {
+            icon = "src/main/resources/application.icns"
+        }
+        if (org.gradle.internal.os.OperatingSystem.current().linux) {
+            icon = "src/main/resources/application.png"
+            installerType = "deb"
+            installerOptions += ["--linux-deb-maintainer", "icuxika@outlook.com", "--linux-menu-group", application.applicationName, "--linux-shortcut"]
+        }
     }
 }
 
-jlinkZip {
-    group = 'distribution'
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+task printDependentJarsList {
+    // 打印出项目所依赖的jar包路径集合并使用 ; 拼接
+    // projectJarPath: 当前项目 gradle jar 制作出来的 jar
+    // dependentJarsPath: 项目依赖的第三方 jar 集合
+    // 使用：jpackage -p "${projectJarPath};${dependentJarsPath}"
+
+    println("----------")
+    println(configurations.getByName("runtimeClasspath").files.join(";"))
+    println("----------")
+}
+
+task copyDependencies(type: Copy) {
+    from(configurations.getByName("runtimeClasspath"))
+    into("$buildDir/modules")
+}
+
+// 打包 -> EXE镜像（build/package/image）
+task package2Image(type: Exec) {
+    dependsOn("build", copyDependencies)
+
+    def iconPath = "$projectDir/src/main/resources/application.ico"
+    if (org.gradle.internal.os.OperatingSystem.current().windows) {
+        iconPath = "$projectDir/src/main/resources/application.ico"
+    } else if (org.gradle.internal.os.OperatingSystem.current().macOsX) {
+        iconPath = "$projectDir/src/main/resources/application.icns"
+    } else if (org.gradle.internal.os.OperatingSystem.current().linux) {
+        iconPath = "$projectDir/src/main/resources/application.png"
+    }
+
+    commandLine("jpackage")
+    args(
+            "-n", application.applicationName,
+            "-t", "app-image",
+            "--java-options", application.applicationDefaultJvmArgs.join(" "),
+            "-p", "$buildDir/modules" + File.pathSeparator + "$buildDir/libs",
+            "-d", "$buildDir/package/image",
+            "-m", "${application.mainModule.get()}/${application.mainClass.get()}",
+            "--icon", "${iconPath}",
+            "--app-version", "$version"
+    )
+}
+
+// 打包 -> MSI安装包（build/package/installer）
+task package2Installer(type: Exec) {
+    dependsOn("build", copyDependencies)
+
+    def installerType = "msi"
+    def iconPath = "$projectDir/src/main/resources/application.ico"
+    if (org.gradle.internal.os.OperatingSystem.current().windows) {
+        installerType = "msi"
+        iconPath = "$projectDir/src/main/resources/application.ico"
+    } else if (org.gradle.internal.os.OperatingSystem.current().macOsX) {
+        installerType = "dmg"
+        iconPath = "$projectDir/src/main/resources/application.icns"
+    } else if (org.gradle.internal.os.OperatingSystem.current().linux) {
+        installerType = "deb"
+        iconPath = "$projectDir/src/main/resources/application.png"
+    }
+
+    def argsList = [
+            "-n", application.applicationName,
+            "-t", "${installerType}",
+            "--java-options", application.applicationDefaultJvmArgs.join(" "),
+            "-p", "$buildDir/modules" + File.pathSeparator + "$buildDir/libs",
+            "-d", "$buildDir/package/installer",
+            "-m", "${application.mainModule.get()}/${application.mainClass.get()}",
+            "--icon", "${iconPath}",
+            "--app-version", "$version"
+    ]
+
+    def winInstallerOptionList = [
+            "--win-dir-chooser",
+            "--win-menu",
+            "--win-shortcut",
+            "--win-menu-group",
+            "${application.applicationName}"
+    ]
+
+    def linuxInstallerOptionList = [
+            "--linux-deb-maintainer",
+            "icuxika@outlook.com",
+            "--linux-menu-group",
+            "${application.applicationName}",
+            "--linux-shortcut"
+    ]
+
+    if (org.gradle.internal.os.OperatingSystem.current().windows) {
+        argsList.addAll(winInstallerOptionList)
+    } else if (org.gradle.internal.os.OperatingSystem.current().linux) {
+        argsList.addAll(linuxInstallerOptionList)
+    }
+
+    commandLine("jpackage")
+    args(argsList)
 }

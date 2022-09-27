@@ -1,10 +1,7 @@
 package com.tangrun.mdm.shell.impl;
 
-import com.tangrun.mdm.shell.core.ShellApi;
+import com.tangrun.mdm.shell.core.*;
 import com.tangrun.mdm.shell.pojo.*;
-import com.tangrun.mdm.shell.core.ShellApiExecResult;
-import com.tangrun.mdm.shell.core.ShellExecResult;
-import com.tangrun.mdm.shell.core.ShellExecutor;
 import com.tangrun.mdm.shell.enums.PackageFilterParam;
 import com.tangrun.util.Function;
 
@@ -18,11 +15,30 @@ import java.util.regex.Pattern;
 public class ShellApiCmdImpl implements ShellApi {
 
     ShellExecutor shellExecutor;
-    Writer log;
 
-    public ShellApiCmdImpl(Writer debug, ShellExecutor shellExecutor) {
+    public ShellApiCmdImpl(ShellExecutor shellExecutor) {
         this.shellExecutor = shellExecutor;
-        log = debug;
+    }
+
+    Pattern patternProps = Pattern.compile("\\[([\\S\\s]+?)\\]: \\[([\\S\\s]+?)\\]");
+
+    @Override
+    public ShellApiExecResult<Map<String, String>> getProps() {
+        return shellApply("adb shell getprop", new Function<ShellExecResult, ShellApiExecResult<Map<String, String>>>() {
+            @Override
+            public ShellApiExecResult<Map<String, String>> apply(ShellExecResult var1) {
+                if (var1.existOk()) {
+                    Matcher matcher = patternProps.matcher(var1.out);
+                    Map<String, String> map = new HashMap<>();
+                    while (matcher.find()) {
+                        String key = matcher.group(1);
+                        String value = matcher.group(2);
+                        map.put(key, value);
+                    }
+                    return ShellApiExecResult.success(map);
+                } else return ShellApiExecResult.fail(var1.error);
+            }
+        });
     }
 
     public ShellApiExecResult<Void> installApp(String path) {
@@ -63,7 +79,7 @@ public class ShellApiCmdImpl implements ShellApi {
 
     public ShellApiExecResult<Boolean> removeActiveAdmin(String pkgName, String className) {
         //Success: Admin removed ComponentInfo{com.tangrun.safe/com.tangrun.safe.dpm.DeviceAdminReceiver}
-        return shellApply("adb shell dpm remove-active-admin " + pkgName+"/"+className, new Function<ShellExecResult, ShellApiExecResult<Boolean>>() {
+        return shellApply("adb shell dpm remove-active-admin " + pkgName + "/" + className, new Function<ShellExecResult, ShellApiExecResult<Boolean>>() {
             @Override
             public ShellApiExecResult<Boolean> apply(ShellExecResult shellAdbShellExecResult) {
                 if (shellAdbShellExecResult.existOk()) {
@@ -125,6 +141,17 @@ public class ShellApiCmdImpl implements ShellApi {
         });
     }
 
+    public ShellApiExecResult<Void> setAppHide(String packageOrClassName, boolean hide) {
+        return shellApply(String.format("adb shell pm %s %s", hide ? "hide" : "unhide", packageOrClassName), new Function<ShellExecResult, ShellApiExecResult<Void>>() {
+            @Override
+            public ShellApiExecResult<Void> apply(ShellExecResult shellAdbShellExecResult) {
+                if (shellAdbShellExecResult.existOk()) {
+                    return ShellApiExecResult.success(null);
+                }
+                return ShellApiExecResult.fail(shellAdbShellExecResult.error);
+            }
+        });
+    }
 
     String shell_package_list = "adb shell pm list package";
     Pattern patternPackage = Pattern.compile("package:(((?!package:).)+)");
@@ -250,30 +277,18 @@ public class ShellApiCmdImpl implements ShellApi {
     }
 
     <T> T shellApply(String command, Function<ShellExecResult, T> function) {
-        long time = System.currentTimeMillis();
-        ShellExecResult execute = shellExecutor.execute(command);
-        if (log != null) {
-            time = System.currentTimeMillis() - time;
-            try {
-                log.write(String.format("AdbShell [%s]: 耗时%dms" +
-                                "\n\texecute: " +
-                                "\n\t\t%s, " +
-                                "\n\tresult: " +
-                                "\n\t\texistValue: %s" +
-                                "\n\t\tout: %s" +
-                                "\n\t\terror: %s" +
-                                "\n",
-                        DateFormat.getDateTimeInstance().format(new Date(System.currentTimeMillis())),
-                        time,
-                        command,
-                        execute.exitValue,execute.out,execute.error
-                ));
-                log.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        ShellExecResult result;
+        if (interceptor != null) {
+            result = interceptor.execute(command, shellExecutor);
+        } else {
+            result = shellExecutor.execute(command);
         }
-        return function.apply(execute);
+        return function.apply(result);
     }
 
+    ShellInterceptor interceptor;
+
+    public void setInterceptor(ShellInterceptor interceptor) {
+        this.interceptor = interceptor;
+    }
 }

@@ -1,10 +1,23 @@
 
+/* 文本框无感显示 */
+.text_area_radius_grey {
+    -fx-background-color: tansparent;
+}
+
+.text_area_radius_grey .scroll-pane .content,.content:focused{
+    -fx-background-color: #e0e0e0;
+    -fx-background-radius: 10px;
+}
+
+
+
 .label_content_area {
     -fx-background-radius: 5px;
     -fx-background-color: #eee;
     -fx-padding: 8 12;
 }
 
+/*按钮*/
 .button_radius {
     -fx-border-color: #000;
     -fx-border-radius: 20px;
@@ -14,7 +27,17 @@
 }
 
 .button_radius:hover {
-    -fx-background-color: #e5e5e5;
+    -fx-background-color: #eee;
 }
 
+.button_radius_red {
+    -fx-border-color: #f00;
+    -fx-border-radius: 20px;
+    -fx-background-color: #00000000;
+    -fx-background-radius: 20px;
+    -fx-text-fill: #f00;
+}
 
+.button_radius_red:hover {
+    -fx-background-color: #eee;
+}

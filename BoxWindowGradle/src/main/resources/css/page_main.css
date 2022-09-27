@@ -1,0 +1,11 @@
+
+
+.h_line {
+    -fx-background-color: #ececec;
+}
+
+.label_content_area {
+    -fx-background-radius: 5px;
+    -fx-background-color: #ececec;
+    -fx-padding: 8 12;
+}

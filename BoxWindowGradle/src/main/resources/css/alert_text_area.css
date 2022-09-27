@@ -1,0 +1,42 @@
+
+.dialog-pane {
+    -fx-background-color: #ffffff;
+    -fx-min-width: 360;
+    -fx-min-height: 240;
+    -fx-pref-width: 360;
+    -fx-pref-height: 240;
+    -fx-max-width: 360;
+    -fx-max-height: 540;
+    -fx-padding: 0px 12px;
+
+    -fx-border-color: #b6b6b6;
+}
+
+.header-panel {
+    -fx-background-color: #ffffff;
+    -fx-padding: 10px 0px;
+}
+
+
+.dialog-pane .text-area {
+    -fx-background-color: #ececec;
+    -fx-background-radius: 10px;
+
+    -fx-padding: 5px;
+    -fx-wrap-text: true;
+}
+
+.dialog-pane .text-area .viewport{
+    -fx-background-color: transparent;
+}
+
+.dialog-pane .text-area .scroll-pane .content,.content:focused{
+    -fx-background-color: transparent;
+}
+
+.button{
+    -fx-background-color: transparent;
+    -fx-text-fill: #000;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
