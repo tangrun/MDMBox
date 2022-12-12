@@ -1,11 +1,5 @@
 package com.tangrun.mdm.boxwindow.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import com.tangrun.mdm.boxwindow.BuildConfig;
 import com.tangrun.mdm.boxwindow.core.BaseController;
 import com.tangrun.mdm.boxwindow.core.LifecycleComposeEvent;
@@ -33,18 +27,15 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -53,8 +44,10 @@ import lombok.extern.log4j.Log4j2;
 import java.awt.*;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.Socket;
 import java.net.URI;
 import java.net.URL;
+import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -66,11 +59,16 @@ import java.util.concurrent.atomic.AtomicReference;
 @Log4j2
 public class MainController extends BaseController {
     /**
-     *
+     * 激活失败重试次数
      */
     private static final int config_reset_profile_owner_count = 3;
+    /**
+     * 关闭账号循环检测次数
+     */
     private static final int config_hide_account_package = 5;
     private static final long config_refresh_device_interval_time = 1000;
+
+    private static boolean check_vivo_device_owner = true;
 
     @FXML
     public Label tvDeviceInfo;
@@ -79,11 +77,9 @@ public class MainController extends BaseController {
     @FXML
     public ImageView btStart;
     @FXML
-    public ImageView ivStart;
+    public VBox llDeviceEmpty;
     @FXML
-    public ImageView ivStop;
-
-
+    public AnchorPane llDeviceContainer;
 
     private Config config;
 
@@ -94,15 +90,13 @@ public class MainController extends BaseController {
      */
     private DeviceWrapper connectedDevice;
 
-    private String qrCodeStart, qrCodeEnd;
-    private Image qrCodeStartImg, qrCodeEndImg;
-
     @Override
     public void initialLazy() {
 
         log.debug("main controller initialLazy");
 
-        tvTitle.setText(BuildConfig.appName + " " + BuildConfig.appVersion);
+//        tvTitle.setText(BuildConfig.appName + " " + BuildConfig.appVersion);
+        tvTitle.setText(BuildConfig.appName);
 
         showLoadingDialog("初始化中...");
 
@@ -119,66 +113,22 @@ public class MainController extends BaseController {
                             IOService.getInstance().execute(new Runnable() {
                                 @Override
                                 public void run() {
+//                                    try {
+//                                        Socket socket = new Socket("127.0.0.1", 5037);
+//                                        log.debug("============ {} {}",socket.isConnected(),socket.isClosed());
+
+//                                        showTipDialog("端口5037已被占用，请关闭其他手机助手类应用后再试");
+//                                        getContext().getApplicationContext()
+//                                                .exitApp();
+//                                    }catch (Exception e){
+//                                        log.error("adb port other using.",e);
+//                                    }
+
                                     if (!DBService.getInstance().initTable()) {
                                         showTipDialog("数据初始化失败或已在运行中");
                                         getContext().getApplicationContext().exitApp();
                                         return;
                                     }
-
-                                    try {
-                                        String string = request("http://wk.safe-app.cn/Services/UserHandler.ashx?action=CheckService", "GET");
-                                        JsonObject jsonObject = new Gson().fromJson(string, JsonObject.class);
-                                        int code = jsonObject.getAsJsonPrimitive("code").getAsInt();
-                                        if (code != 1) {
-                                            String msg = jsonObject.getAsJsonPrimitive("msg").getAsString();
-                                            showTipDialog(msg == null ? "网络连接失败" : msg);
-                                            getContext().getApplicationContext().exitApp();
-                                            return;
-                                        } else {
-                                            JsonObject data = jsonObject.getAsJsonObject("data");
-                                            qrCodeStart = data.getAsJsonPrimitive("beginCode").getAsString();
-                                            qrCodeEnd = data.getAsJsonPrimitive("endCode").getAsString();
-                                        }
-                                        if (qrCodeStart == null) {
-                                            showTipDialog("上课二维码获取失败");
-                                            getContext().getApplicationContext().exitApp();
-                                            return;
-                                        }
-                                        if (qrCodeEnd == null) {
-                                            showTipDialog("下课二维码获取失败");
-                                            getContext().getApplicationContext().exitApp();
-                                            return;
-                                        }
-
-                                    } catch (Exception e) {
-                                        log.error(e.getMessage(), e);
-                                        showTipDialog("二维码获取失败，请稍后再试");
-                                        getContext().getApplicationContext().exitApp();
-                                        return;
-                                    }
-
-                                    try {
-                                        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-
-                                        {
-                                            BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeStart, BarcodeFormat.QR_CODE, 200, 200);
-                                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                                            MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
-                                            qrCodeStartImg = new Image(new ByteArrayInputStream(outputStream.toByteArray()));
-                                        }
-                                        {
-                                            BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeEnd, BarcodeFormat.QR_CODE, 200, 200);
-                                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                                            MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
-                                            qrCodeEndImg = new Image(new ByteArrayInputStream(outputStream.toByteArray()));
-                                        }
-                                    } catch (Exception e) {
-                                        log.error(e.getMessage(), e);
-                                        showTipDialog("二维码生成失败");
-                                        getContext().getApplicationContext().exitApp();
-                                        return;
-                                    }
-
 
                                     ConfigWrapper configWrapper = ConfigService.getInstance().getConfig();
                                     if (configWrapper.getConfig() == null) {
@@ -200,12 +150,6 @@ public class MainController extends BaseController {
                                     Platform.runLater(new Runnable() {
                                         @Override
                                         public void run() {
-                                            if (qrCodeStartImg != null)
-                                                ivStart.setImage(qrCodeStartImg);
-                                            if (qrCodeStartImg != null)
-                                                ivStop.setImage(qrCodeEndImg);
-
-
                                             hideLoadingDialog();
 
                                             // adb
@@ -267,9 +211,21 @@ public class MainController extends BaseController {
         if (!showConfirmDialog("是否开始激活？")) {
             return;
         }
-        showLoadingDialog("激活中...\n\n激活过程中请勿断开手机连接！！！");
-        ResultWrapper resultWrapper = startRegistration_setProfileOwner();
-        startRegistration_recoveryHideApp();
+        showLoadingDialog("激活中，预计时间1-2分钟...\n\n激活过程中请勿断开手机连接！！！");
+        ResultWrapper resultWrapper = startRegistration_beforeCheck();
+        if (resultWrapper.resultSuccess) {
+            log.debug("激活前检测结果正常");
+            resultWrapper = new ResultWrapper();
+            startRegistration_setProfileOwner(0, resultWrapper);
+            if (resultWrapper.resultSuccess) {
+                log.debug("激活成功！！！");
+            } else {
+                log.debug("激活结果 {}", resultWrapper.resultMsg);
+            }
+            startRegistration_recoveryHideApp();
+        } else {
+            log.debug("激活前检测结果 {}", resultWrapper.resultMsg);
+        }
         showTipDialog(resultWrapper.resultMsg);
         hideLoadingDialog();
     }
@@ -288,44 +244,62 @@ public class MainController extends BaseController {
     }
 
 
+    protected String RESULT_fail_uninstall_app = "请先安装APP后再进行激活";
     protected String RESULT_fail_shell_error = "操作失败，请检查设备连接再进行激活";
     protected String RESULT_fail_multi_user = "激活失败，请关闭系统分身/应用双开等多开功能后再试";
     protected String RESULT_fail_xiaomi_no_manager_device_admins_permisiion = "激活失败，小米用户请手动在系统设置=>开发者设置=>开启“USB 调试（安全设置）”，如仍不可以请关闭“MIUI 优化”";
-    protected String RESULT_fail_multi_account = "激活失败，还有账户存在，请手动移除账号";
+    protected String RESULT_fail_multi_account = "激活失败，请退出系统登录账号后再试";
     protected String RESULT_fail_has_other_app_set = "激活失败，已有其他软件被激活";
 
-
-    private ResultWrapper startRegistration_setProfileOwner() {
-        log.info("registration. start");
+    private ResultWrapper startRegistration_beforeCheck() {
+        log.debug("开始激活");
 
         ResultWrapper resultWrapper = new ResultWrapper();
 
         {
-            log.info("registration. check has profile owner");
+            log.info("检查是否已激活");
 
-            ShellApiExecResult<ProfileOwner> result = adbShell.getProfileOwner();
+            ShellApiExecResult<ProfileOwner> result;
+            if (config_isSetDeviceOwner()) {
+                result = adbShell.getDeviceOwner();
+            } else {
+                result = adbShell.getProfileOwner();
+            }
             if (!result.success) {
-                log.error("get profile owner error. {}", result.msg);
+                log.error("获取owner信息失败. {}", result.msg);
                 resultWrapper.resultMsg = RESULT_fail_shell_error;
                 return resultWrapper;
             }
             if (result.data != null) {
                 if (Objects.equals(result.data.getPkgName(), config.getPkgName())) {
-                    resultWrapper.resultMsg = "应用已激活";
+                    resultWrapper.resultMsg = "设备已经激活过了，不需要再次激活";
                 } else
                     resultWrapper.resultMsg = "已经有激活的应用了\n" + result.data.getPkgName();
                 return resultWrapper;
             }
         }
 
+        {
+            log.debug("检查是否安装APP");
+            ShellApiExecResult<List<String>> result = adbShell.getPackageList(PackageFilterParam.user);
+            if (!result.success) {
+                log.error("获取安装应用列表失败，{}", result.msg);
+                resultWrapper.resultMsg = RESULT_fail_shell_error;
+                return resultWrapper;
+            }
+            if (!result.data.contains(config.getPkgName())) {
+                resultWrapper.resultMsg = RESULT_fail_uninstall_app;
+                return resultWrapper;
+            }
+        }
 
         // 多用户检测
         {
-            log.info("registration. multi user checking.");
+            log.info("检查多用户");
 
             ShellApiExecResult<List<UserInfo>> userList = adbShell.getUserList();
             if (!userList.success) {
-                log.error("get user list error. {}", userList.msg);
+                log.error("获取用户列表. {}", userList.msg);
                 resultWrapper.resultMsg = RESULT_fail_shell_error;
                 return resultWrapper;
             }
@@ -338,7 +312,7 @@ public class MainController extends BaseController {
                             datum.isMain() ? "【系统】" : ""
                     ));
                 }
-                log.info("has multi user.{}", stringBuilder.toString());
+                log.debug("多用户信息 {}", stringBuilder.toString());
                 stringBuilder
                         .append("\n发现存在多个用户，是否移除非主用户之外的用户？(直接关闭系统分身/应用双开功能)")
                         .append("\n如有系统分身/应用双开，请提前备份其数据！！！");
@@ -349,76 +323,40 @@ public class MainController extends BaseController {
                 // 开始移除other用户
                 for (UserInfo datum : userList.data) {
                     if (datum.isMain()) continue;
-                    log.info("disable user result, id: {} name: {}", datum.id, datum.name);
                     ShellApiExecResult<Void> result = adbShell.removeUser(datum.id);
-                    log.info("disable user result, id: {} name: {}, success: {}", datum.id, datum.name, result.success);
+                    log.debug("移除用户结果, id: {} name: {}, success: {}", datum.id, datum.name, result.success);
                     if (!result.success) {
-                        log.error("disable user error. {}", result.msg);
+                        log.error("移除用户失败. {}", result.msg);
                         resultWrapper.resultMsg = "移除用户失败\n" + result.msg;
                         return resultWrapper;
                     }
                 }
             }
         }
-        startRegistration_setProfileOwner(0, resultWrapper);
-        return resultWrapper;
-    }
 
-    private ResultWrapper startRegistration_recoveryHideApp() {
-        ResultWrapper resultWrapper = new ResultWrapper();
-
-        List<DeviceLogEntity> deviceLogEntityList = DeviceLogService.getDeviceLogList(connectedDevice.getDeviceId());
-        if (!deviceLogEntityList.isEmpty()) {
-            for (DeviceLogEntity deviceLogEntity : deviceLogEntityList) {
-                ShellApiExecResult<Void> result = adbShell.setEnabled(deviceLogEntity.getContent(), true);
-                if (result.success) {
-                    deviceLogEntity.setState(0);
-                    DeviceLogService.save(deviceLogEntity);
-                } else {
-                    log.warn("recovery hide app {} error, {}", deviceLogEntity.getContent(), result.msg);
-                }
-            }
-        }
-
-        ShellApiExecResult<List<String>> result = adbShell.getPackageList(PackageFilterParam.disabled);
-        if (!result.success) {
-            log.warn("禁用app列表获取失败\n" + result.msg);
-            resultWrapper.resultMsg = "获取临时清单失败\n" + result.msg;
-            return resultWrapper;
-        }
-        if (result.data == null || result.data.isEmpty()) {
-            log.warn("禁用app列表结果为空");
-        } else {
-            for (String s : result.data) {
-                ShellApiExecResult<Void> enabled = adbShell.setEnabled(s, true);
-                if (!enabled.success) {
-                    log.warn("恢复 " + s + " 失败\n" + enabled.msg);
-                }
-            }
-        }
         resultWrapper.resultSuccess = true;
         return resultWrapper;
     }
 
     private void startRegistration_setProfileOwner(int count, ResultWrapper resultWrapper) {
         if (count > config_reset_profile_owner_count) {
-            log.error("registration. retry timeout {}", count);
+            log.error("重新设置owner超时，共{}次", count);
             StringJoiner stringJoiner = new StringJoiner("\n", "\n", "");
             for (String s : resultWrapper.hideErrorList) {
                 stringJoiner.add(s);
             }
-            resultWrapper.resultMsg = RESULT_fail_multi_account + stringJoiner;
+            resultWrapper.resultMsg = RESULT_fail_multi_account  + stringJoiner;
             return;
         }
-        log.error("registration. set {}", count);
+        log.error("准备设置owner {}", count);
         // hide有账号的应用
         {
-            log.info("registration. disable has account app.");
+            log.info("开始检测账号应用");
 
             for (int i = 0; i < config_hide_account_package; i++) {
                 ShellApiExecResult<List<UserAccounts>> userAccounts = adbShell.getUserAccounts();
                 if (!userAccounts.success) {
-                    log.error("get user account error. {}", userAccounts.msg);
+                    log.error("获取账号列表信息失败. {}", userAccounts.msg);
                     resultWrapper.resultMsg = RESULT_fail_shell_error;
                     return;
                 }
@@ -427,10 +365,14 @@ public class MainController extends BaseController {
                         continue;
                     }
                     if (accounts.serviceInfoList.isEmpty() && accounts.accountList.isEmpty()) {
-                        log.info("user account list empty, break for loop.");
-                        i = 10;
+                        log.debug("账号列表为空，提前退出检测");
+                        i = config_hide_account_package;
                         break;
                     }
+
+                    log.debug("serviceInfoList: {}",accounts.serviceInfoList);
+                    log.debug("accountList: {}",accounts.accountList);
+
                     for (ServiceInfo serviceInfo : accounts.serviceInfoList) {
                         DeviceLogEntity deviceLogEntity = DeviceLogService.getDeviceLog(connectedDevice.getDeviceId(), serviceInfo.componentName.packageName);
                         if (deviceLogEntity == null)
@@ -441,10 +383,14 @@ public class MainController extends BaseController {
                         deviceLogEntity.setState(1);
                         DeviceLogService.save(deviceLogEntity);
 
-                        ShellApiExecResult<Void> result = adbShell.setEnabled(serviceInfo.componentName.packageName, false);
+                        log.info("禁用APP {}", serviceInfo.componentName.packageName);
+                        ShellApiExecResult<Void> result =
+                                config_isUseHideAppMode() ?
+                                        adbShell.setAppHide(serviceInfo.componentName.packageName, false) :
+                                        adbShell.setEnabled(serviceInfo.componentName.packageName, false);
                         if (!result.success) {
                             resultWrapper.hideErrorList.add(serviceInfo.componentName.packageName);
-                            log.warn("hide package {} error. {}", serviceInfo.componentName.packageName, result.msg);
+                            log.warn("禁用APP {} 失败. {}", serviceInfo.componentName.packageName, result.msg);
 //                            if (!showConfirmDialog("账号应用 "+serviceInfo.componentName.packageName+ " 处理失败，是否继续？\n继续有可能失败，请前往设置>账号 手动退出已登录账号")) {
 //                                return;
 //                            }
@@ -463,9 +409,13 @@ public class MainController extends BaseController {
                         deviceLogEntity.setState(1);
                         DeviceLogService.save(deviceLogEntity);
 
-                        ShellApiExecResult<Void> result = adbShell.setEnabled(account.type, false);
+                        log.debug("禁用APP type {}", account.type);
+                        ShellApiExecResult<Void> result =
+                                config_isUseHideAppMode() ?
+                                        adbShell.setAppHide(account.type, false) :
+                                        adbShell.setEnabled(account.type, false);
                         if (!result.success) {
-                            log.warn("hide type {} error. {}", account.type, result.msg);
+                            log.warn("禁用APP type {} 失败. {}", account.type, result.msg);
                             resultWrapper.hideErrorList.add(account.type);
 //                            if (!showConfirmDialog("账号应用组件 "+account.type+" 处理失败，是否继续？\n继续有可能失败，请前往设置>账号 手动退出已登录账号")) {
 //                                return;
@@ -480,21 +430,30 @@ public class MainController extends BaseController {
 
         // 激活
         {
-            log.info("registration. set profile owner.");
+            log.info("开始设置owner");
 
-            ShellApiExecResult<Void> result = adbShell.setProfileOwner(config.getComponent());
+
+            ShellApiExecResult<Void> result;
+            if (config_isSetDeviceOwner()) {
+                log.debug("检测到是VIVO手机");
+                result = adbShell.setDeviceOwner(config.getComponent());
+            } else {
+                result = adbShell.setProfileOwner(config.getComponent());
+            }
+
 
             resultWrapper.resultSuccess = false;
             if (result.msg != null) {
-                if (result.msg.contains("but profile owner is already set")) {
+                log.debug("设置owner结果 {}", result.msg);
+                if (result.msg.contains("is already set")) {
                     resultWrapper.resultMsg = RESULT_fail_has_other_app_set;
-                } else if (result.msg.contains("there are already some accounts")) {
+                } else if (result.msg.contains("already some accounts")) {
                     startRegistration_setProfileOwner(count + 1, resultWrapper);
                 } else if (result.msg.contains("users on the")) {
                     resultWrapper.resultMsg = RESULT_fail_multi_user;
                 } else if (result.msg.contains("android.permission.MANAGE_DEVICE_ADMINS")) {
                     resultWrapper.resultMsg = RESULT_fail_xiaomi_no_manager_device_admins_permisiion;
-                } else if (result.msg.contains("Error: Unknown admin: ComponentInfo")) {
+                } else if (result.msg.contains("Unknown admin")) {
                     resultWrapper.resultMsg = "激活失败，请先安装应用";
                 } else if (result.msg.contains("KNOX_PROXY_ADMIN_INTERNAL")) {
                     //激活失败
@@ -523,6 +482,86 @@ public class MainController extends BaseController {
         }
     }
 
+    private ResultWrapper startRegistration_recoveryHideApp() {
+        log.debug("开始恢复APP");
+        ResultWrapper resultWrapper = new ResultWrapper();
+
+        List<DeviceLogEntity> deviceLogEntityList = DeviceLogService.getDeviceLogList(connectedDevice.getDeviceId());
+        if (!deviceLogEntityList.isEmpty()) {
+            for (DeviceLogEntity deviceLogEntity : deviceLogEntityList) {
+                log.info("恢复APP: " + deviceLogEntity.getContent());
+                ShellApiExecResult<Void> result = config_isUseHideAppMode() ?
+                        adbShell.setAppHide(deviceLogEntity.getContent(), true) :
+                        adbShell.setEnabled(deviceLogEntity.getContent(), true);
+                if (result.success) {
+                    deviceLogEntity.setState(0);
+                    DeviceLogService.save(deviceLogEntity);
+                } else {
+                    log.warn("恢复APP {} 失败, {}", deviceLogEntity.getContent(), result.msg);
+                }
+            }
+        }
+
+        ShellApiExecResult<List<String>> result = adbShell.getPackageList(PackageFilterParam.disabled);
+        if (!result.success) {
+            log.warn("禁用app列表获取失败\n" + result.msg);
+            resultWrapper.resultMsg = "获取临时清单失败\n" + result.msg;
+            return resultWrapper;
+        }
+        if (result.data == null || result.data.isEmpty()) {
+            log.warn("禁用app列表结果为空");
+        } else {
+            for (String s : result.data) {
+                log.debug("恢复本机APP: " + s);
+                ShellApiExecResult<Void> enabled = config_isUseHideAppMode() ?
+                        adbShell.setAppHide(s, true) :
+                        adbShell.setEnabled(s, true);
+                if (!enabled.success) {
+                    log.warn("恢复APP {} 失败, {}", s, enabled.msg);
+                }
+            }
+        }
+        resultWrapper.resultSuccess = true;
+        return resultWrapper;
+    }
+
+    /**
+     * 暂时为测试使用 华为、荣耀等 手机 账号检测时 禁用APP不管用
+     * 原为adb shell pm enable/disable-user pkg/type
+     * 返回true时 adb shell pm hide/unhide pkg/type
+     *
+     * 测试发现 使用hide会报错
+     * java.lang.SecurityException: Neither user 2000 nor current process has android.permission.MANAGE_USERS.
+     * @return
+     */
+    private boolean config_isUseHideAppMode() {
+        return false;
+//        if (connectedDevice == null) return false;
+//        String phoneManufacturer = connectedDevice.getPhoneManufacturer().toLowerCase(Locale.ROOT);
+//        return phoneManufacturer.contains("honor");
+    }
+
+    /**
+     * 默认是设置profileowner vivo设置为deviceowner
+     *
+     * @return
+     */
+    private boolean config_isSetDeviceOwner() {
+        if (connectedDevice == null) return false;
+        String phoneManufacturer = connectedDevice.getPhoneManufacturer().toLowerCase(Locale.ROOT);
+        return check_vivo_device_owner && phoneManufacturer.contains("vivo");
+    }
+
+    private static class ResultWrapper {
+        Set<String> hideErrorList = new HashSet<>();
+        boolean resultSuccess;
+        String resultMsg;
+
+    }
+
+    //endregion
+
+    //region 点击事件
 
 
     public void onUSBDebugCLick(MouseEvent mouseEvent) {
@@ -563,27 +602,23 @@ public class MainController extends BaseController {
         openURL("http://wk.safe-app.cn/usbHuawei.html");
     }
 
-    private void openURL(String url)
-    {
+    private void openURL(String url) {
         Desktop desktop = Desktop.getDesktop();
         try {
             desktop.browse(URI.create(url));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            showTipDialog("打开网页 "+url+" 失败\n"+e.getMessage());
+            showTipDialog("打开网页 " + url + " 失败\n" + e.getMessage());
         }
     }
 
-    private class ResultWrapper {
-        Set<String> hideErrorList = new HashSet<>();
-        boolean resultSuccess;
-        String resultMsg;
+    public void onOpenUSBCourseClick(MouseEvent mouseEvent) {
 
     }
 
-    //endregion
+    public void onOpenCompleteCourseClick(MouseEvent mouseEvent) {
 
-    //region 点击事件
+    }
 
 
     public void onCancelClick(MouseEvent actionEvent) {
@@ -641,36 +676,30 @@ public class MainController extends BaseController {
                 connectedDevice = null;
                 ShellApiExecResult<List<Device>> result = runIOThread(() -> adbShell.getDeviceList());
 
-                if (result.success && (result.data == null || result.data.isEmpty())){
-                    Label value = new Label();
-                    value.setText("当前无设备连接，如果已连接无法识别，");
-                    value.setFont(tvDeviceInfo.getFont());
-                    value.setTextFill(Color.valueOf("#000000"));
-                    tvDeviceInfo.setGraphic(value);
-                    tvDeviceInfo.setText("点击这里");
-                    tvDeviceInfo.setUnderline(true);
-                    tvDeviceInfo.setTextFill(Color.valueOf("#0000ff"));
-                    tvDeviceInfo.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent event) {
-                            onTipDeviceConnectClick(event);
-                        }
-                    });
-                }else {
-                    tvDeviceInfo.setGraphic(null);
-                    tvDeviceInfo.setUnderline(false);
-                    tvDeviceInfo.setOnMouseClicked(null);
-                    tvDeviceInfo.setTextFill(Color.valueOf("#000000"));
-                }
                 if (result.success) {
                     if (result.data == null || result.data.isEmpty()) {
-//                        tvDeviceInfo.setText("");
+                        llDeviceContainer.getChildren().remove(tvDeviceInfo);
+                        if (!llDeviceContainer.getChildren().contains(llDeviceEmpty))
+                            llDeviceContainer.getChildren().add(llDeviceEmpty);
+
+//                        tvDeviceInfo.setVisible(false);
+//                        llDeviceEmpty.setVisible(true);
                     } else if (result.data.size() > 1) {
-                        tvDeviceInfo.setText("存在多个设备连接，请保持只有一台设备");
+                        tvDeviceInfo.setText("当前有多个设备连接，请保持只有一台设备");
+                        if (!llDeviceContainer.getChildren().contains(tvDeviceInfo))
+                            llDeviceContainer.getChildren().add(tvDeviceInfo);
+                        llDeviceContainer.getChildren().remove(llDeviceEmpty);
+//                        tvDeviceInfo.setVisible(true);
+//                        llDeviceEmpty.setVisible(false);
                     } else {
                         ShellApiExecResult<Map<String, String>> execResult = adbShell.getProps();
                         if (!execResult.success) {
-                            tvDeviceInfo.setText("查询连接设备信息失败");
+                            tvDeviceInfo.setText("获取设备信息失败，请检查USB连接是否正常");
+                            if (!llDeviceContainer.getChildren().contains(tvDeviceInfo))
+                                llDeviceContainer.getChildren().add(tvDeviceInfo);
+                            llDeviceContainer.getChildren().remove(llDeviceEmpty);
+//                            tvDeviceInfo.setVisible(true);
+//                            llDeviceEmpty.setVisible(false);
                             return;
                         }
                         Map<String, String> map = execResult.data;
@@ -692,15 +721,24 @@ public class MainController extends BaseController {
                         connectedDevice = new DeviceWrapper(result.data.get(0), map);
                         tvDeviceInfo.setText(
                                 String.format("%s %s Android %s (%s)" +
-                                                "\ndeviceId: %s",
+                                                "\n设备ID: %s",
                                         connectedDevice.getPhoneManufacturer(), connectedDevice.getPhoneModel(),
                                         connectedDevice.getAndroidVersion(), connectedDevice.getDevice().state.desc,
                                         connectedDevice.getDeviceId()
                                 )
                         );
+                        if (!llDeviceContainer.getChildren().contains(tvDeviceInfo))
+                            llDeviceContainer.getChildren().add(tvDeviceInfo);
+                        llDeviceContainer.getChildren().remove(llDeviceEmpty);
+//                        tvDeviceInfo.setVisible(true);
+//                        llDeviceEmpty.setVisible(false);
                     }
                 } else {
-                    tvDeviceInfo.setText("获取设备失败");
+                    llDeviceContainer.getChildren().remove(tvDeviceInfo);
+                    if (!llDeviceContainer.getChildren().contains(llDeviceEmpty))
+                        llDeviceContainer.getChildren().add(llDeviceEmpty);
+//                    tvDeviceInfo.setVisible(false);
+//                    llDeviceEmpty.setVisible(true);
                     showTipDialog("获取设备失败\n" + result.msg);
                     getContext().getApplicationContext().exitApp();
                 }

@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>网课助手</title>
     <style>
         body {
             margin: 0;
@@ -16,7 +16,7 @@
             list-style-type: none;
             margin: 0;
             padding: 0;
-            width: 25%;
+            width: 20%;
             background-color: #f1f1f1;
             position: fixed;
             height: 100%;
@@ -24,152 +24,190 @@
         }
 
 
-        .menu_ul a {
-            display: block;
-            color: #000;
-            padding: 8px 16px;
-            text-decoration: none;
-        }
+            .menu_ul a {
+                display: block;
+                color: #000;
+                padding: 8px 16px;
+                text-decoration: none;
+            }
 
-        .menu_ul a.active {
-            background-color: #4CAF50;
-            color: white;
-        }
+                .menu_ul a.active {
+                    background-color: #4CAF50;
+                    color: white;
+                }
 
-        .menu_ul a:hover:not(.active) {
-            background-color: #555;
-            color: white;
-        }
+                .menu_ul a:hover:not(.active) {
+                    background-color: #555;
+                    color: white;
+                }
 
-        .menu_ul ul {
-            list-style-type: none;
-            padding: 0px;
-        }
+            .menu_ul ul {
+                list-style-type: none;
+                padding: 0px;
+            }
 
-        .menu_ul ul li a {
-            list-style-type: none;
-            padding-inline-start: 40px;
-        }
+                .menu_ul ul li a {
+                    list-style-type: none;
+                    padding-inline-start: 40px;
+                }
 
         .img_container {
             text-align: center;
         }
 
         .content_label {
-
         }
 
-        .content_label p {
-            text-indent: 2em;
-            line-height: 2em
-        }
+            .content_label p {
+                text-indent: 2em;
+                line-height: 2em
+            }
     </style>
 </head>
 <body>
 
-<div>
-    <ul class="menu_ul">
-        <li>
-            <a href="#function">使用之前</a>
-        </li>
-        <li>
-            <a href="#faq_open_debug_mode">打开调试模式</a>
-            <ul>
-                <li><a href="#faq_open_debug_mode_huawei">华为</a></li>
-                <li><a href="#faq_open_debug_mode_samsung">三星</a></li>
-                <li><a href="#faq_open_debug_mode_xiaomi">小米</a></li>
-                <li><a href="#faq_open_debug_mode_vivo">VIVO</a></li>
-                <li><a href="#faq_open_debug_mode_oppo">OPOPO</a></li>
-            </ul>
-        </li>
-        <a href="#faq_close_other_user">关闭系统分身和应用分身</a>
-        <a href="#faq_device_disconnected">手机连接不上电脑</a>
-    </ul>
 
-    <div style="margin-left: 25%;padding: 16px;">
-        <h2 id="function">使用之前</h2>
-        <div class="content_label">
-            <p>
-                本软件主要作用于安卓设备管控功能的激活与取消，使用过程中需要注意几点，
-                设备连接电脑之前，需要打开手机的USB调试模式，打开的操作步骤请<a href="#faq_open_debug_mode">点击此处查看</a>;
-                执行激活操作之前，请备份系统分身/应用双开的重要数据，激活过程中会关闭该功能，手动关闭操作步骤请<a href="#faq_close_other_user">点击此处查看</a>;
+    <div>
+        <ul class="menu_ul">
+            <li>
+                <a href="#faq_open_debug_mode">第三步、打开手机调试模式</a>
+                <ul>
+                    <li><a href="#faq_open_debug_mode_huawei">1、华为</a></li>
+                    <li><a href="#faq_open_debug_mode_samsung">2、三星</a></li>
+                    <li><a href="#faq_open_debug_mode_xiaomi">3、小米</a></li>
+                    <li><a href="#faq_open_debug_mode_vivo">4、VIVO</a></li>
+                    <li><a href="#faq_open_debug_mode_oppo">5、OPPO</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#function4">第四步、用数据线连接手机和电脑</a>
+            </li>
+            <li>
+                <a href="#function5">第五步、激活权限</a>
+            </li>
+            <li>
+                <a href="#function8">常见问题解决办法</a>
+                <ul>
+                    <li><a href="#faq_device_disconnected">1、手机连接不上电脑？</a></li>
+                    <li><a href="#faq_device_unistall">2、如何卸载APP？</a></li>
+                    <li><a href="#faq_close_other_user">3、如何关闭分身？</a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <div style="margin-left: 25%;padding: 16px;">
+            <h2 id="faq_open_debug_mode">第三步、打开手机调试模式</h2>
+            <div class="content_label">
+                <!--<p>各常见厂商开启步骤：</p>-->
+                <h3 id="faq_open_debug_mode_huawei">1、华为：<a href="http://wk.safe-app.cn/usbHuawei.html">演示视频</a></h3>
+                <div>
+                    <p>设置 -&gt; 关于手机 -&gt; 连续点击“版本号”打开开发者模式 </p>
+                    <p>设置 -&gt; 系统和更新 -&gt; 开发人员选项 -&gt; 打开“开发者选项”和<q>USB调试</q></p>
+                </div>
+                <h3 id="faq_open_debug_mode_samsung">2、三星：<a href="http://wk.safe-app.cn/usbSamsung.html">演示视频</a></h3>
+                <div>
+                    <p>设置 -&gt; 关于手机 -&gt; 软件信息 -&gt; 连续点击“版本号”或者“编译编号”打开开发者模式</p>
+                    <p>设置 -&gt; 开发者选项 -&gt; 打开“开发者选项”，打开“USB调试”</p>
+                </div>
+                <h3 id="faq_open_debug_mode_xiaomi">3、小米：<a href="http://wk.safe-app.cn/usbXiaomi.html">演示视频</a></h3>
+                <div>
+                    <p>设置 -&gt; 我的设备 -&gt; 全部参数 -&gt; 连续点击“MIUI 版本”打开开发者模式</p>
+                    <p>设置 -&gt; 更多设置 -&gt; 开发者选项 -&gt; 打开“开发者选项”，打开“USB调试”</p>
+                </div>
+                <h3 id="faq_open_debug_mode_vivo">4、VIVO：<a href="http://wk.safe-app.cn/usbVivo.html">演示视频</a></h3>
+                <div>
+                    <p>设置 -&gt; 系统管理 -&gt; 关于手机 -&gt; 连续点击“软件版本号”打开开发者模式</p>
+                    <p>设置 -&gt; 系统管理 -&gt; 开发者选项 -&gt; 打开“开发者选项”，打开“USB调试”</p>
+                </div>
+                <h3 id="faq_open_debug_mode_oppo">5、OPPO：<a href="http://wk.safe-app.cn/usbOppo.html">演示视频</a></h3>
+                <div>
+                    <p>设置 -&gt; 关于手机 -&gt; 版本信息 -&gt; 连续点击“版本号”打开开发者模式</p>
+                    <p>设置 -&gt; 其他设置 -&gt; 开发者选项 -&gt; 打开“开发者选项”，打开“USB调试”</p>
+                </div>
+            </div>
+
+            <h2 id="function4">第四步、用数据线连接手机和电脑</h2>
+            <div class="content_label">
+                <p>打开USB调试模式后，连接电脑时会弹出允许调试提示框，请同意，如下图：</p>
+                <div class="img_container">
+                    <img src="img/allow_open_debug.png" style="width: 30%;" />
+                </div>
+                <p><strong>注：</strong>手机与电脑连接成功后，工具上会显示出当前的设备信息，如下图：</p>
+                <div class="img_container">
+                    <img src="img/tools_connected.png" style="width: 30%;" />
+                </div>
+            </div>
+            <h2 id="function5">第五步、激活权限</h2>
+            <div class="content_label">
+                <p>手机与电脑连接成功后，点击“开始激活”按钮，完成权限激活，激活成功后如下图：</p>
+                <div class="img_container">
+                    <img src="img/tools_start.png" style="width: 30%;" />
+                    <img src="img/tools_success.png" style="width: 30%;" />
+                </div>
+            </div>
+            <h2 id="function6">第六步、扫码上课</h2>
+            <div class="content_label">
+                <p>打开手机端，点击“扫码”扫描电脑端的【上课二维码】开始上课，如下图：</p>
+                <div class="img_container">
+                    <img src="img/3.png" style="width: 30%;" />
+                    <img src="img/tools_sk.png" style="width: 30%;" />
+                </div>
+                <p><strong>注意：</strong>上课后手机只能使用白名单中的应用。</p>
+            </div>
+            <h2 id="function7">第七步、扫码下课</h2>
+            <div class="content_label">
+                <p>打开手机端，点击“扫码”扫描电脑端的【下课二维码】下课，手机恢复正常，如下图：</p>
+                <div class="img_container">
+                    <img src="img/5.png" style="width: 30%;" />
+                    <img src="img/tools_xk.png" style="width: 30%;" />
+                </div>
+            </div>
+            <h2 id="function8">常见问题解决办法</h2>
+
+            <h3 id="faq_device_disconnected">1、手机连接不上电脑</h3>
+            <div class="content_label">
+                <p>请检查以下内容</p>
+                <ul>
+                    <li>检查数据线是否可用，正在充电不能当作可用判断条件，因为劣质数据线只可充电不可传输数据。</li>
+                    <li>重新插拔USB接口，查看是否接触不良</li>
+                    <li>下拉通知栏中切换USB选项为文件传输模式，部分手机需要切换到文件传输模式。</li>
+                    <li>
+                        弹出<q>允许调试提示框</q>时是否没点击确定或者关闭了窗口，甚至没弹框，请前往开发者选项界面撤回USB授权后重新插拔设备，如下图所示
+                        <div class="img_container">
+                            <img src="img/withdrw_usb_allow.png" style="width: 50%;">
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+
+            <h3 id="faq_device_unistall">2、如何卸载APP？</h3>
+            <div class="content_label">
+                <p>因为激活后无法长按app图标直接卸载网课助手，请到app设置中选择卸载软件，如下图：</p>
+                <div class="img_container">
+                    <img src="img/tools_setting.png" style="width: 20%;" />
+                    <img src="img/tools_unstall.png" style="width: 20%;" />
+                </div>
+                <p><strong>注意：</strong>三星手机如果点击卸载后没有立即卸载，请重启手机后再尝试；</p>
+            </div>
+            <h3 id="faq_close_other_user">3、如何关闭系统分身和应用分身</h3>
+            <div class="content_label">
+                <strong>注意：</strong>
+                <ul>
+                    <li>如果没有启用系统分身和应用分身可以忽略此操作</li>
+                    <li>如果用户没有手动关闭，系统会自动关闭，为避免数据丢失，建议先备份数据再手动关闭</li>
+                    <li>小米、OPPO、VIVO 手机必须手动关闭系统和应用分身，小米手机关闭系统和应用分身后需重启手机</li>
+                    <li>系统分身在各个品牌手机上会有差异，如三星手机是安全文件夹、华为手机是隐私空间</li>
+                </ul>
+                <h4>华为：</h4>
+                <p>设置 -> 隐私 -> 隐私空间 -> 删除隐私空间</p>
+                <h4>三星：</h4>
+                <p>安全文件夹 -> 设置 -> 更多设置 -> 卸载</p>
+            </div>
+
+            <div style="height: 800px;"></div>
         </div>
-        <h2 id="faq_open_debug_mode">打开调试模式</h2>
-        <div class="content_label">
-            <p><strong>注：</strong>打开USB调试模式后，连接电脑时会弹出允许调试提示框，请同意，如下图：</p>
-            <div class="img_container">
-                <img src="img/allow_open_debug.png" style="width: 50%;"/>
-            </div>
-            <p>各常见厂商开启步骤：</p>
-
-            <h3 id="faq_open_debug_mode_huawei">华为：</h3>
-            <div>
-                <p>设置 -> 关于手机 -> 连击<q>版本号</q>打开开发者模式 </p>
-                <p>设置 -> 系统和更新 -> 开发人员选项 -> 打开<q>开发者选项</q>和<q>USB调试</q></p>
-            </div>
-            <h3 id="faq_open_debug_mode_samsung">三星：</h3>
-            <div>
-                <p>设置 -> 关于手机 -> 软件信息 -> 连击<q>版本号</q>或者<q>编译编号</q>打开开发者模式</p>
-                <p>设置 -> 开发者选项 -> 打开<q>开发者选项</q>，打开<q>USB调试</q></p>
-            </div>
-            <h3 id="faq_open_debug_mode_xiaomi">小米：</h3>
-            <div>
-                <p>设置 -> 我的设备 -> 全部参数 -> 连击<q>MIUI 版本</q>打开开发者模式</p>
-                <p>设置 -> 更多设置 -> 开发者选项 -> 打开<q>开发者选项</q>，打开<q>USB调试</q></p>
-            </div>
-            <h3 id="faq_open_debug_mode_vivo">VIVIO：</h3>
-            <div>
-                <p>设置 -> 系统管理 -> 关于手机 -> 连击“软件版本号”打开开发者模式</p>
-                <p>设置 -> 系统管理 -> 开发者选项 -> 打开<q>开发者选项</q>，打开<q>USB调试</q></p>
-            </div>
-            <h3 id="faq_open_debug_mode_oppo">OPPO：</h3>
-            <div>
-                <p>设置 -> 关于手机 -> 版本信息 -> 连击“版本号”打开开发者模式</p>
-                <p>设置 -> 其他设置 -> 开发者选项 -> 打开<q>开发者选项</q>，打开<q>USB调试</q></p>
-            </div>
-        </div>
-
-        <h2 id="faq_recovery_hide_app">消失APP恢复</h2>
-        <div class="content_label">
-            <p>发现有APP消失的情况，可在软件首页点击<q>消失APP恢复</q>使用该功能进行恢复操作。</p>
-        </div>
-
-        <h2 id="faq_close_other_user">关闭系统分身和应用分身</h2>
-        <div class="content_label">
-            <strong>说明：</strong>
-            <ul>
-                <li>如果没有启用系统分身和应用分身可以忽略此操作</li>
-                <li>如果用户没有手动关闭，系统会自动关闭，为避免数据丢失，建议先备份数据再手动关闭</li>
-                <li>小米、OPPO、VIVO 手机必须手动关闭系统和应用分身，小米手机关闭系统和应用分身后需重启手机</li>
-                <li>系统分身在各个品牌手机上会有差异，如三星手机是安全文件夹、华为手机是隐私空间</li>
-            </ul>
-            <h4>华为：</h4>
-            <p>设置 -> 隐私 -> 隐私空间 -> 删除隐私空间</p>
-            <h4>三星：</h4>
-            <p>安全文件夹 -> 设置 -> 更多设置 -> 卸载</p>
-
-
-        </div>
-
-        <h2 id="faq_device_disconnected">手机连接不上电脑</h2>
-        <div class="content_label">
-            <p>请检查以下内容</p>
-            <ul>
-                <li>检查数据线是否可用，正在充电不能当作可用判断条件，因为劣质数据线只可充电不可传输数据。</li>
-                <li>重新插拔USB接口，查看是否接触不良</li>
-                <li>下拉通知栏中切换USB选项为文件传输模式，部分手机需要切换到文件传输模式。</li>
-                <li>弹出<q>允许调试提示框</q>时是否没点击确定或者关闭了窗口，甚至没弹框，请前往开发者选项界面撤回USB授权后重新插拔设备，如下图所示
-                    <div class="img_container">
-                        <img src="img/withdrw_usb_allow.png" style="width: 50%;">
-                    </div>
-                </li>
-
-            </ul>
-        </div>
-
-        <div style="height: 800px;"></div>
     </div>
-</div>
 
 </body>
 </html>

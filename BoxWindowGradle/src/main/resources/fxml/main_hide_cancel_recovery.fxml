@@ -151,7 +151,7 @@
                                 <Label text="关于" />
                             </children>
                         </VBox>
-                        <VBox alignment="CENTER" spacing="16.0" GridPane.rowIndex="1">
+                        <VBox alignment="CENTER" spacing="16.0" GridPane.rowIndex="1" visible="false">
                             <children>
                                 <ImageView fx:id="btRecoveryAllHideApp" onMouseClicked="#onRecoveryAllHideApp" pickOnBounds="true" preserveRatio="true">
                                     <image>

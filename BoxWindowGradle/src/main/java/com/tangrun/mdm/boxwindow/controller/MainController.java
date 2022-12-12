@@ -11,7 +11,6 @@ import com.tangrun.mdm.boxwindow.service.ConfigService;
 import com.tangrun.mdm.boxwindow.service.DBService;
 import com.tangrun.mdm.boxwindow.shell.core.ShellExecuteLogger;
 import com.tangrun.mdm.boxwindow.dao.entity.DeviceLogEntity;
-import com.tangrun.mdm.boxwindow.pojo.AccountAppInfo;
 import com.tangrun.mdm.boxwindow.pojo.Config;
 import com.tangrun.mdm.boxwindow.pojo.ConfigWrapper;
 import com.tangrun.mdm.boxwindow.pojo.DeviceWrapper;
@@ -40,25 +39,26 @@ import lombok.extern.log4j.Log4j2;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Pattern;
 
 @Log4j2
 public class MainController extends BaseController {
     /**
-     *
+     * 激活失败重试次数
      */
     private static final int config_reset_profile_owner_count = 3;
+    /**
+     * 关闭账号循环检测次数
+     */
     private static final int config_hide_account_package = 5;
     private static final long config_refresh_device_interval_time = 1000;
+
+    private static boolean check_vivo_device_owner = true;
 
     @FXML
     public Label tvDeviceInfo;
@@ -88,6 +88,46 @@ public class MainController extends BaseController {
      */
     private DeviceWrapper connectedDevice;
 
+    private void showInputLicense(String msg) {
+        if (!Platform.isFxApplicationThread()) {
+            runUIThread(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    showInputLicense(msg);
+                    return null;
+                }
+            });
+            return;
+        }
+        ButtonType btLicense = new ButtonType("输入license");
+        ButtonType btExit = new ButtonType("退出");
+        Optional<ButtonType> optional = showTextAreaAlertAndShowAwait("提示", msg, btLicense, btExit);
+        if (optional.isPresent()) {
+            ButtonType buttonType = optional.get();
+            if (buttonType == btLicense) {
+                ButtonType btSave = new ButtonType("保存");
+                Alert alert = new Alert(Alert.AlertType.NONE, null, btSave, btExit);
+                alert.setTitle("输入license");
+                DialogPane dialogPane = alert.getDialogPane();
+                TextArea textArea = new TextArea();
+                textArea.setWrapText(true);
+                textArea.setEditable(true);
+                dialogPane.setContent(textArea);
+                optional = showAlertAndAwait(alert);
+                if (optional.get() == btSave) {
+                    String text = textArea.getText();
+                    boolean b = ConfigService.getInstance().saveConfig(text);
+                    if (b) {
+                        showTipDialog("请重启软件生效");
+                    } else {
+                        File file = new File("");
+                        showTipDialog("保存失败，请手动复制license.txt到" +file.getAbsolutePath() + "目录下");
+                    }
+                }
+                return;
+            }
+        }
+    }
 
     @Override
     public void initialLazy() {
@@ -119,7 +159,7 @@ public class MainController extends BaseController {
 
                                     ConfigWrapper configWrapper = ConfigService.getInstance().getConfig();
                                     if (configWrapper.getConfig() == null) {
-                                        showTipDialog(configWrapper.getMsg());
+                                        showInputLicense(configWrapper.getMsg());
                                         getContext().getApplicationContext()
                                                 .exitApp();
                                         return;
@@ -198,7 +238,7 @@ public class MainController extends BaseController {
     protected String RESULT_fail_shell_error = "操作失败，请检查设备连接再进行激活";
     protected String RESULT_fail_multi_user = "激活失败，请关闭系统分身/应用双开等多开功能后再试";
     protected String RESULT_fail_xiaomi_no_manager_device_admins_permisiion = "激活失败，小米用户请手动在系统设置=>开发者设置=>开启“USB 调试（安全设置）”，如仍不可以请关闭“MIUI 优化”";
-    protected String RESULT_fail_multi_account = "激活失败，还有账户存在，请手动移除账号";
+    protected String RESULT_fail_multi_account = "激活失败，请退出系统登录账户后再试，任然不行可前往 设置=》账号与同步，手动移除所有账号后再试";
     protected String RESULT_fail_has_other_app_set = "激活失败，已有其他软件被激活";
 
 
@@ -210,9 +250,23 @@ public class MainController extends BaseController {
         {
             log.info("registration. check has profile owner");
 
-            ShellApiExecResult<ProfileOwner> result = adbShell.getProfileOwner();
+            ShellApiExecResult<AdminOwnerInfo> result = adbShell.getDeviceOwner();
             if (!result.success) {
                 log.error("get profile owner error. {}", result.msg);
+                resultWrapper.resultMsg = RESULT_fail_shell_error;
+                return resultWrapper;
+            }
+            if (result.data != null) {
+                if (Objects.equals(result.data.getPkgName(), config.getPkgName())) {
+                    resultWrapper.resultMsg = "应用已激活";
+                } else
+                    resultWrapper.resultMsg = "已经有激活的应用了\n" + result.data.getPkgName();
+                return resultWrapper;
+            }
+
+            result = adbShell.getProfileOwner();
+            if (!result.success) {
+                log.error("get device owner error. {}", result.msg);
                 resultWrapper.resultMsg = RESULT_fail_shell_error;
                 return resultWrapper;
             }
@@ -271,12 +325,13 @@ public class MainController extends BaseController {
         return resultWrapper;
     }
 
-    private ResultWrapper startRegistration_recoveryHideApp( ) {
+    private ResultWrapper startRegistration_recoveryHideApp() {
         ResultWrapper resultWrapper = new ResultWrapper();
 
         List<DeviceLogEntity> deviceLogEntityList = DeviceLogService.getDeviceLogList(connectedDevice.getDeviceId());
         if (!deviceLogEntityList.isEmpty()) {
             for (DeviceLogEntity deviceLogEntity : deviceLogEntityList) {
+                log.info("set enabled 1: "+deviceLogEntity.getContent());
                 ShellApiExecResult<Void> result = adbShell.setEnabled(deviceLogEntity.getContent(), true);
                 if (result.success) {
                     deviceLogEntity.setState(0);
@@ -295,8 +350,9 @@ public class MainController extends BaseController {
         }
         if (result.data == null || result.data.isEmpty()) {
             log.warn("禁用app列表结果为空");
-        }else {
+        } else {
             for (String s : result.data) {
+                log.info("set enabled 2: "+s);
                 ShellApiExecResult<Void> enabled = adbShell.setEnabled(s, true);
                 if (!enabled.success) {
                     log.warn("恢复 " + s + " 失败\n" + enabled.msg);
@@ -348,6 +404,8 @@ public class MainController extends BaseController {
                         deviceLogEntity.setState(1);
                         DeviceLogService.save(deviceLogEntity);
 
+//                        ShellApiExecResult<Void> result = adbShell.setEnabled(serviceInfo.componentName.packageName+"/"+serviceInfo.componentName.className, false);
+                        log.info("set disabled pkg: "+serviceInfo.componentName.packageName);
                         ShellApiExecResult<Void> result = adbShell.setEnabled(serviceInfo.componentName.packageName, false);
                         if (!result.success) {
                             resultWrapper.hideErrorList.add(serviceInfo.componentName.packageName);
@@ -370,6 +428,7 @@ public class MainController extends BaseController {
                         deviceLogEntity.setState(1);
                         DeviceLogService.save(deviceLogEntity);
 
+                        log.info("set disabled type: "+account.type);
                         ShellApiExecResult<Void> result = adbShell.setEnabled(account.type, false);
                         if (!result.success) {
                             log.warn("hide type {} error. {}", account.type, result.msg);
@@ -389,11 +448,18 @@ public class MainController extends BaseController {
         {
             log.info("registration. set profile owner.");
 
-            ShellApiExecResult<Void> result = adbShell.setProfileOwner(config.getComponent());
+            String phoneManufacturer = connectedDevice.getPhoneManufacturer().toLowerCase(Locale.ROOT);
+            ShellApiExecResult<Void> result ;
+            if (check_vivo_device_owner && phoneManufacturer.contains("vivo")){
+                result = adbShell.setDeviceOwner(config.getComponent());
+            }else {
+                result = adbShell.setProfileOwner(config.getComponent());
+            }
+
 
             resultWrapper.resultSuccess = false;
             if (result.msg != null) {
-                if (result.msg.contains("but profile owner is already set")) {
+                if (result.msg.contains("is already set")) {
                     resultWrapper.resultMsg = RESULT_fail_has_other_app_set;
                 } else if (result.msg.contains("there are already some accounts")) {
                     startRegistration_setProfileOwner(count + 1, resultWrapper);
@@ -401,7 +467,7 @@ public class MainController extends BaseController {
                     resultWrapper.resultMsg = RESULT_fail_multi_user;
                 } else if (result.msg.contains("android.permission.MANAGE_DEVICE_ADMINS")) {
                     resultWrapper.resultMsg = RESULT_fail_xiaomi_no_manager_device_admins_permisiion;
-                } else if (result.msg.contains("Error: Unknown admin: ComponentInfo")) {
+                } else if (result.msg.contains("Unknown admin: ComponentInfo")) {
                     resultWrapper.resultMsg = "激活失败，请先安装应用";
                 } else if (result.msg.contains("KNOX_PROXY_ADMIN_INTERNAL")) {
                     //激活失败
@@ -419,7 +485,7 @@ public class MainController extends BaseController {
                 }
             }
 
-            if (resultWrapper.resultMsg != null) {
+            if (resultWrapper.resultMsg == null) {
                 if (result.success) {
                     resultWrapper.resultSuccess = true;
                     resultWrapper.resultMsg = "激活成功!";
@@ -457,20 +523,30 @@ public class MainController extends BaseController {
 
     private void onCancelClick() {
 
-        ShellApiExecResult<ProfileOwner> result = adbShell.getProfileOwner();
+        ShellApiExecResult<AdminOwnerInfo> result = adbShell.getDeviceOwner();
         if (!result.success) {
             showTipDialog("查询设备已激活信息失败\n" + result.msg);
             return;
         }
-        ProfileOwner profileOwner = result.data;
-        if (profileOwner == null) {
+
+        // device owner
+        if(result.data==null){
+            result = adbShell.getProfileOwner();
+            if (!result.success) {
+                showTipDialog("查询设备已激活信息失败\n" + result.msg);
+                return;
+            }
+        }
+
+        AdminOwnerInfo adminOwnerInfo = result.data;
+        if (adminOwnerInfo == null) {
             showTipDialog("设备没有查到有激活信息，不需要激活");
             return;
         }
-        if (!showConfirmDialog("是否取消激活？\n已激活APP信息：" + profileOwner.getPkgName())) {
+        if (!showConfirmDialog("是否取消激活？\n已激活APP信息：" + adminOwnerInfo.getPkgName())) {
             return;
         }
-        ShellApiExecResult<Boolean> execResult = adbShell.removeActiveAdmin(profileOwner.getComponentName().packageName, profileOwner.getComponentName().className);
+        ShellApiExecResult<Boolean> execResult = adbShell.removeActiveAdmin(adminOwnerInfo.getComponentName().packageName, adminOwnerInfo.getComponentName().className);
         if (execResult.success) {
             showTipDialog("取消激活" + (execResult.data == Boolean.TRUE ? "成功" : "失败"));
         } else {
@@ -649,12 +725,15 @@ public class MainController extends BaseController {
 
     public void onHelpClick(MouseEvent mouseEvent) {
         File file = new File("doc/index.html");
+        if (!file.exists()) {
+            file = new File("app/doc/index.html");
+        }
         Desktop desktop = Desktop.getDesktop();
         try {
             desktop.browse(file.toURI());
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
-            showTipDialog("打开帮助页面失败\n"+e.getMessage());
+            log.error(e.getMessage(), e);
+            showTipDialog("打开帮助页面失败\n" + e.getMessage());
         }
     }
 
@@ -814,6 +893,7 @@ public class MainController extends BaseController {
 
         dialogPane.setContent(textArea);
         dialogPane.getStylesheets().add(getClass().getResource("/css/alert_text_area.css").toExternalForm());
+
         return showAlertAndAwait(alert);
     }
 
@@ -871,7 +951,7 @@ public class MainController extends BaseController {
     private final Object object = new Object();
     Thread thread;
     boolean inRefreshing = false;
-    boolean threadStop ;
+    boolean threadStop;
 
     private void startRefreshThread() {
         threadStop = false;

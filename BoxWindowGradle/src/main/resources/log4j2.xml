@@ -24,8 +24,8 @@
         </RollingRandomAccessFile>
     </Appenders>
     <Loggers>
-        <Logger name="com.tangrun.mdm.boxwindow" level="debug"/>
-        <Logger name="com.tangrun.mdm.boxwindow.shell.core.ShellExecuteLogger" level="info"/>
+<!--        <Logger name="com.tangrun.mdm.boxwindow" level="debug"/>-->
+<!--        <Logger name="com.tangrun.mdm.boxwindow.shell.core.ShellExecuteLogger" level="info"/>-->
         <Root level="info">
             <AppenderRef ref="console"/>
             <AppenderRef ref="errorFile"/>

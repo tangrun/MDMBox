@@ -10,3 +10,8 @@
 local.properties
 build
 logs
+/LicenseGenerator/target/
+target
+/LicenseGenerator/target/
+/BoxWindowGradle/log/
+/StudyOnlineTool/log

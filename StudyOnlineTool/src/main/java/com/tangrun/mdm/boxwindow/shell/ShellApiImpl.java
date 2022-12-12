@@ -86,6 +86,31 @@ public class ShellApiImpl implements ShellApi {
         });
     }
 
+    Pattern patternDevicePolicyDeviceOwner = Pattern.compile(
+            "Device Owner[\\S\\s]+?admin=ComponentInfo\\{(?<componentPkg>[\\S]+?)\\/(?<componentCls>[\\S]+)\\}[\\s]+name=(?<name>[\\S]*)[\\s]+package=(?<pkgName>[\\S]+)[\\S\\s]+?User ID:[\\s]+(?<userId>[\\d]+?)"
+            );
+
+    public ShellApiExecResult<ProfileOwner> getDeviceOwner() {
+        return shellApply("adb shell dumpsys device_policy", new Function<ShellExecResult, ShellApiExecResult<ProfileOwner>>() {
+            @Override
+            public ShellApiExecResult<ProfileOwner> apply(ShellExecResult shellAdbShellExecResult) {
+                if (shellAdbShellExecResult.existOk()) {
+                    Matcher matcher = patternDevicePolicyDeviceOwner.matcher(shellAdbShellExecResult.out);
+                    if (matcher.find()) {
+                        Integer userId = Integer.parseInt(matcher.group("userId"));
+                        String cPkgName = matcher.group("componentPkg");
+                        String cClsName = matcher.group("componentCls");
+                        String name = matcher.group("name");
+                        String pkgName = matcher.group("pkgName");
+                        return ShellApiExecResult.success(new ProfileOwner(userId, new ComponentName(cPkgName, cClsName), pkgName, name));
+                    }
+                    return ShellApiExecResult.success(null);
+                }
+                return ShellApiExecResult.fail(shellAdbShellExecResult.error);
+            }
+        });
+    }
+
     Pattern patternDevicePolicyProfileOwner = Pattern.compile(
             "Profile Owner \\(User (.+?)\\):\\s+?admin=ComponentInfo\\{(.+?)\\/(.+?)\\}\\s+?name=(\\w*?)\\s+?package=(\\S+)");
 
@@ -110,6 +135,19 @@ public class ShellApiImpl implements ShellApi {
         });
     }
 
+    public ShellApiExecResult<Void> setDeviceOwner(ComponentName componentName) {
+        return shellApply(String.format("adb shell dpm set-device-owner %s/%s", componentName.packageName, componentName.className), new Function<ShellExecResult, ShellApiExecResult<Void>>() {
+            @Override
+            public ShellApiExecResult<Void> apply(ShellExecResult shellAdbShellExecResult) {
+                if (shellAdbShellExecResult.existOk()) {
+                    ShellApiExecResult<Void> result = ShellApiExecResult.success(null);
+                    result.msg = "".equals(shellAdbShellExecResult.error) ? shellAdbShellExecResult.out : shellAdbShellExecResult.error;
+                    return result;
+                }
+                return ShellApiExecResult.fail(shellAdbShellExecResult.error);
+            }
+        });
+    }
 
     public ShellApiExecResult<Void> setProfileOwner(ComponentName componentName) {
         return shellApply(String.format("adb shell dpm set-profile-owner %s/%s", componentName.packageName, componentName.className), new Function<ShellExecResult, ShellApiExecResult<Void>>() {

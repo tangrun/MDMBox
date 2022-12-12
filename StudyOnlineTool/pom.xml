@@ -12,8 +12,8 @@
     <properties>
 
 
-        <build.app.name>网课助手</build.app.name>
-        <build.app.version>1.0</build.app.version>
+        <build.app.name>育儿袋-激活工具</build.app.name>
+        <build.app.version>1.1.21206</build.app.version>
         <build.mainClass>com.tangrun.mdm.boxwindow.Launcher</build.mainClass>
         <build.mainModuleClass>StudyOnlineTool/com.tangrun.mdm.boxwindow.Launcher</build.mainModuleClass>
         <build.icon>${project.basedir}/src/main/resources/application.ico</build.icon>
@@ -413,10 +413,9 @@
                                 <argument>--win-dir-chooser</argument>
                                 <argument>--win-menu</argument>
                                 <argument>--win-shortcut</argument>
-                                <argument>--win-shortcut-prompt</argument>
                                 <argument>--vendor</argument>
                                 <argument>cdblue</argument>
-<!--                                <argument>&#45;&#45;win-per-user-install</argument>-->
+                                <argument>--win-per-user-install</argument>
 <!--                                <argument>&#45;&#45;win-console</argument>-->
                                 <argument>--win-upgrade-uuid</argument>
                                 <argument>fd64bb54-afde-4224-9a6c-2092b8c2ec8b</argument>
@@ -424,6 +423,9 @@
                             </arguments>
                         </configuration>
                     </execution>
+
+
+
                 </executions>
             </plugin>
 

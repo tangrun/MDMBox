@@ -16,7 +16,7 @@ public class ShellExecutorImpl implements ShellExecutor {
 
     public ShellExecutorImpl() {
         defaultExecutor = new DefaultExecutor();
-        defaultExecutor.setWorkingDirectory(new File("./lib/"));
+//        defaultExecutor.setWorkingDirectory(new File("./lib/"));
         outputStream = new ByteArrayOutputStream();
         errorStream = new ByteArrayOutputStream();
         pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);

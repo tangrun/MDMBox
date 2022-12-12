@@ -6,10 +6,6 @@
         <Console name="console" target="System.out">
             <PatternLayout pattern="${pattern}"/>
         </Console>
-        <console name="Console" target="SYSTEM_OUT">
-            <!--PatternLayout :输出日志的格式,LOG4J2定义了输出代码,详见第二部分-->
-            <PatternLayout pattern="${pattern}"/>
-        </console>
 
         <RollingRandomAccessFile name="errorFile" fileName="log/error.log"
                                  filePattern="log/error_%d{yyyyMMdd}.log">
@@ -26,7 +22,7 @@
     <Loggers>
         <Logger name="com.tangrun.mdm.boxwindow" level="debug"/>
         <Logger name="com.tangrun.mdm.boxwindow.shell.core.ShellExecuteLogger" level="info"/>
-        <Root level="info">
+        <Root level="debug">
             <AppenderRef ref="console"/>
             <AppenderRef ref="errorFile"/>
         </Root>

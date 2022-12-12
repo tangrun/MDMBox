@@ -13,7 +13,7 @@
 
 
         <build.app.name>激活助手</build.app.name>
-        <build.app.version>1.0</build.app.version>
+        <build.app.version>1.0.21104</build.app.version>
         <build.mainClass>com.tangrun.mdm.boxwindow.Launcher</build.mainClass>
         <build.mainModuleClass>com.tangrun.mdm.boxwindow/com.tangrun.mdm.boxwindow.Launcher</build.mainModuleClass>
         <build.icon>${project.basedir}/src/main/resources/application.ico</build.icon>
@@ -384,6 +384,12 @@
                                 <argument>--win-upgrade-uuid</argument>
                                 <argument>5e1be8ae-c950-45e8-b81d-4cfafffd7048</argument>
 
+<!--                                <argument>&#45;&#45;mac-package-identifier</argument>-->
+<!--                                <argument>5e1be8ae-c950-45e8-b81d-4cfafffd7048</argument>-->
+<!--                                <argument>&#45;&#45;mac-package-name</argument>-->
+<!--                                <argument>${build.app.name}</argument>-->
+<!--                                <argument>&#45;&#45;mac-signing-key-user-name</argument>-->
+<!--                                <argument>Cdblue</argument>-->
                             </arguments>
                         </configuration>
                     </execution>

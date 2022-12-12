@@ -42,6 +42,7 @@ public interface ShellApi {
      * @return
      */
     ShellApiExecResult<ProfileOwner> getProfileOwner();
+    ShellApiExecResult<ProfileOwner> getDeviceOwner();
 
     /**
      * 设置profile owner
@@ -50,6 +51,7 @@ public interface ShellApi {
      */
     ShellApiExecResult<Void> setProfileOwner(ComponentName componentName);
 
+    ShellApiExecResult<Void> setDeviceOwner(ComponentName componentName);
     /**
      * 设置应用 禁用/使用
      * @param packageName

@@ -9,44 +9,80 @@ import com.tangrun.mdm.boxwindow.pojo.ConfigWrapper;
 import com.tangrun.mdm.boxwindow.utils.Utils;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.File;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Base64;
 
 @Log4j2
 public class ConfigService implements LifecycleEventListener {
 
     private static ConfigService configService;
-    public static ConfigService getInstance(){
-        if (configService== null)
+
+    public static ConfigService getInstance() {
+        if (configService == null)
             configService = new ConfigService();
         return configService;
     }
 
-    private ConfigService(){
+    private ConfigService() {
 
     }
 
     ConfigWrapper configWrapper;
-    public ConfigWrapper getConfig(){
+
+    public ConfigWrapper getConfig() {
         if (configWrapper == null)
             configWrapper = getConfigWrapper();
         return configWrapper;
     }
 
+    public boolean saveConfig(String msg) {
+        File configFile = new File("license.txt");
+        if (!configFile.exists()) {
+            try {
+                if (!configFile.createNewFile()) {
+                    return false;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(configFile);
+            fileWriter.write(msg);
+            fileWriter.flush();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (fileWriter != null) {
+                try {
+                    fileWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
+    }
+
     @Override
     public void onEvent(LifecycleState state) {
 
-        if (state == LifecycleState.OnInit){
+        if (state == LifecycleState.OnInit) {
 
-        }else if (state == LifecycleState.OnReady){
+        } else if (state == LifecycleState.OnReady) {
 //            AppConfigService.setAppUseTime();
-        }else if (state == LifecycleState.OnRelease){
+        } else if (state == LifecycleState.OnRelease) {
             AppConfigService.setAppUseTime();
         }
     }
 
-    private   ConfigWrapper getConfigWrapper( ) {
+    private ConfigWrapper getConfigWrapper() {
         ConfigWrapper configWrapper = new ConfigWrapper();
         String content = null;
         {
@@ -65,7 +101,7 @@ public class ConfigService implements LifecycleEventListener {
                 String read = new String(Base64.getDecoder().decode(content), StandardCharsets.UTF_8);
                 config = new Gson().fromJson(read, Config.class);
             } catch (Exception e) {
-                log.error(e.getMessage(),e);
+                log.error(e.getMessage(), e);
             }
             if (config == null) {
                 configWrapper.setMsg("license无效");
@@ -80,8 +116,8 @@ public class ConfigService implements LifecycleEventListener {
                 }
             }
         }
-        if (configWrapper.getConfig() == null){
-            configWrapper.setMsg(configWrapper.getMsg()+ "\n\n设备ID: " + Utils.getMachineCode());
+        if (configWrapper.getConfig() == null) {
+            configWrapper.setMsg(configWrapper.getMsg() + "\n\n设备ID: " + Utils.getMachineCode());
         }
         return configWrapper;
     }

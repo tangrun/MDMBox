@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox prefHeight="720.0" prefWidth="480.0" style="-fx-border-color: #000" stylesheets="@../css/page_main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tangrun.mdm.boxwindow.controller.MainController">
+<VBox prefHeight="720.0" prefWidth="420.0" style="-fx-border-color: #000" stylesheets="@../css/page_main.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tangrun.mdm.boxwindow.controller.MainController">
     <children>
         <AnchorPane>
             <children>
@@ -21,7 +15,7 @@
                         <Font name="System Bold" size="16.0" />
                     </font>
                 </Label>
-                <HBox alignment="CENTER" spacing="16.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <HBox alignment="CENTER" focusTraversable="true" spacing="16.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>
                         <HBox alignment="CENTER" onMouseClicked="#onExitClick" spacing="4.0">
                             <children>
@@ -45,122 +39,104 @@
             </padding>
         </AnchorPane>
         <Label maxHeight="1.0" maxWidth="1.7976931348623157E308" minHeight="1.0" prefHeight="1.0" styleClass="h_line" />
+
+
         <VBox spacing="16.0" VBox.vgrow="ALWAYS">
             <children>
-<!--                <Label maxWidth="1.7976931348623157E308" text="使用说明" wrapText="true">-->
-<!--                    <font>-->
-<!--                        <Font name="System Bold" size="14.0" />-->
-<!--                    </font>-->
-<!--                </Label>-->
-<!--                <VBox styleClass="label_content_area">-->
-<!--                    <children>-->
-<!--                        <HBox>-->
-<!--                            <children>-->
-<!--                                <Label fx:id="tvUse01" wrapText="true">-->
-<!--                                    <font>-->
-<!--                                        <Font size="14.0" />-->
-<!--                                    </font>-->
-<!--                                    <opaqueInsets>-->
-<!--                                        <Insets />-->
-<!--                                    </opaqueInsets>-->
-<!--                                </Label>-->
-<!--                                <Label fx:id="tvUse02" wrapText="true">-->
-<!--                                    <font>-->
-<!--                                        <Font size="14.0" />-->
-<!--                                    </font>-->
-<!--                                    <opaqueInsets>-->
-<!--                                        <Insets />-->
-<!--                                    </opaqueInsets>-->
-<!--                                </Label>-->
-<!--                                <Label fx:id="tvUse03" wrapText="true">-->
-<!--                                    <font>-->
-<!--                                        <Font size="14.0" />-->
-<!--                                    </font>-->
-<!--                                    <opaqueInsets>-->
-<!--                                        <Insets />-->
-<!--                                    </opaqueInsets>-->
-<!--                                </Label>-->
-<!--                            </children>-->
-<!--                        </HBox>-->
-<!--                        <Label fx:id="tvUse" wrapText="true">-->
-<!--                            <font>-->
-<!--                                <Font size="14.0" />-->
-<!--                            </font>-->
-<!--                            <opaqueInsets>-->
-<!--                                <Insets />-->
-<!--                            </opaqueInsets>-->
-<!--                        </Label>-->
-<!--                        <HBox>-->
-<!--                            <children>-->
-<!--                                <Label fx:id="tvUse1" wrapText="true">-->
-<!--                                    <font>-->
-<!--                                        <Font size="14.0" />-->
-<!--                                    </font>-->
-<!--                                    <opaqueInsets>-->
-<!--                                        <Insets />-->
-<!--                                    </opaqueInsets>-->
-<!--                                </Label>-->
-<!--                                <Label fx:id="tvUse11" textFill="BLUE" wrapText="true">-->
-<!--                                    <font>-->
-<!--                                        <Font size="14.0" />-->
-<!--                                    </font>-->
-<!--                                    <opaqueInsets>-->
-<!--                                        <Insets />-->
-<!--                                    </opaqueInsets>-->
-<!--                                </Label>-->
-<!--                            </children>-->
-<!--                        </HBox>-->
-<!--                        <Label fx:id="tvUse2" wrapText="true">-->
-<!--                            <font>-->
-<!--                                <Font size="14.0" />-->
-<!--                            </font>-->
-<!--                            <opaqueInsets>-->
-<!--                                <Insets />-->
-<!--                            </opaqueInsets>-->
-<!--                        </Label>-->
-<!--                    </children>-->
-<!--                    <VBox.margin>-->
-<!--                        <Insets top="-8.0" />-->
-<!--                    </VBox.margin>-->
-<!--                </VBox>-->
 
-                <Label maxWidth="1.7976931348623157E308" text="注意事项" wrapText="true">
+                <Label maxWidth="1.7976931348623157E308" text="当前连接设备" wrapText="true">
                     <font>
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
-            <VBox spacing="4.0" styleClass="label_content_area">
-               <children>
-                      <Label fx:id="tvTip" maxWidth="1.7976931348623157E308" text="1、软件激活时会自动关闭系统应用分身和系统分身，如果有使用分身功能请先备份分身中的数据，避免数据丢失。&#10;2、本软件目前为测试版本，建议将手机信息备份后再激活。" wrapText="true">
-                          <font>
-                              <Font size="14.0" />
-                          </font>
-                          <opaqueInsets>
-                              <Insets />
-                          </opaqueInsets>
-                          <VBox.margin>
-                              <Insets />
-                          </VBox.margin>
-                      </Label>
-                  <Label text="3、上课后能使用的应用列表：" wrapText="true">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <Label text="&#9;电话、短信、微信、QQ、腾讯会议、腾讯课堂、人人通。" textFill="BLUE">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-               </children>
-            </VBox>
+                <AnchorPane fx:id="llDeviceContainer" focusTraversable="true">
+                    <children>
+                        <Label fx:id="tvDeviceInfo" maxWidth="1.7976931348623157E308" styleClass="label_content_area" text="hhh" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                            <opaqueInsets>
+                                <Insets />
+                            </opaqueInsets>
+
+                        </Label>
+                        <VBox fx:id="llDeviceEmpty" focusTraversable="true" minHeight="-Infinity" styleClass="label_content_area" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <Label text="当前无设备连接，请按照以下步骤连接设备：" wrapText="true">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <Label maxWidth="346.0" minHeight="-Infinity" text="&#9;1、手机打开USB调试模式，各常见品牌打开方法：&#10;" wrapText="true">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <HBox spacing="8.0">
+                                    <children>
+                                        <Label text="&#9;" />
+                                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBHuaweiClick" text="华为" textFill="BLUE" underline="true" wrapText="true">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                            <opaqueInsets>
+                                                <Insets />
+                                            </opaqueInsets>
+                                        </Label>
+                                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBSanxingClick" text="三星" textFill="BLUE" underline="true" wrapText="true">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                            <opaqueInsets>
+                                                <Insets />
+                                            </opaqueInsets>
+                                        </Label>
+                                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBXiaomiClick" text="小米" textFill="BLUE" underline="true" wrapText="true">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                            <opaqueInsets>
+                                                <Insets />
+                                            </opaqueInsets>
+                                        </Label>
+                                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBOppoClick" text="OPPO" textFill="BLUE" underline="true" wrapText="true">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                            <opaqueInsets>
+                                                <Insets />
+                                            </opaqueInsets>
+                                        </Label>
+                                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBVivoClick" text="VIVO" textFill="BLUE" underline="true" wrapText="true">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                            <opaqueInsets>
+                                                <Insets />
+                                            </opaqueInsets>
+                                        </Label>
+                                    </children>
+                                    <VBox.margin>
+                                        <Insets />
+                                    </VBox.margin>
+                                </HBox>
+                                <Label maxWidth="346.0" minHeight="-Infinity" text="&#9;2、使用数据线将手机与电脑连接，并选择USB连接方式为传输文件；&#10;&#9;&#10;更详细教程请点击“使用说明”查看" wrapText="true" VBox.vgrow="ALWAYS">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+
+
                 <GridPane alignment="CENTER" hgap="16.0" vgap="16.0">
                     <columnConstraints>
                         <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints fillHeight="false" minHeight="10.0" valignment="CENTER" />
                         <RowConstraints fillHeight="false" minHeight="10.0" valignment="CENTER" />
                     </rowConstraints>
                     <children>
@@ -184,26 +160,6 @@
                                 <Label text="使用说明" />
                             </children>
                         </VBox>
-                        <VBox alignment="CENTER" spacing="16.0" GridPane.rowIndex="1">
-                            <children>
-                                <ImageView fx:id="ivStart" fitHeight="80" fitWidth="80" onMouseClicked="#startQRCode" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../static/qrcode_download.png" />
-                                    </image>
-                                </ImageView>
-                                <Label text="上课二维码" />
-                            </children>
-                        </VBox>
-                        <VBox alignment="CENTER" spacing="16.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                            <children>
-                                <ImageView fx:id="ivStop" fitHeight="80" fitWidth="80" onMouseClicked="#stopQRCode" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../static/qrcode_download.png" />
-                                    </image>
-                                </ImageView>
-                                <Label text="下课二维码" />
-                            </children>
-                        </VBox>
                     </children>
                     <VBox.margin>
                         <Insets />
@@ -212,92 +168,44 @@
                         <Insets left="16.0" right="16.0" />
                     </padding>
                 </GridPane>
-                <Label maxWidth="1.7976931348623157E308" text="当前连接设备" wrapText="true">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font>
-                </Label>
-                <Label fx:id="tvDeviceInfo" maxWidth="1.7976931348623157E308" styleClass="label_content_area" wrapText="true">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                    <VBox.margin>
-                        <Insets top="-8.0" />
-                    </VBox.margin>
-                    <opaqueInsets>
-                        <Insets />
-                    </opaqueInsets>
 
-                </Label>
-                <Label maxWidth="1.7976931348623157E308" text="USB调试模式打开方法" wrapText="true">
+                <Label maxWidth="1.7976931348623157E308" text="注意事项" wrapText="true">
                     <font>
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
-                <HBox spacing="8.0" styleClass="label_content_area">
+                <VBox spacing="4.0" styleClass="label_content_area">
                     <children>
-                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBHuaweiClick" text="华为" textFill="BLUE" underline="true" wrapText="true">
+                        <Label fx:id="tvTip" maxWidth="1.7976931348623157E308" text="软件激活时会自动关闭系统应用分身和系统分身，如果有使用分身功能请先备份分身中的数据，避免数据丢失。" wrapText="true">
                             <font>
                                 <Font size="14.0" />
                             </font>
                             <opaqueInsets>
                                 <Insets />
                             </opaqueInsets>
-                        </Label>
-                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBSanxingClick" text="三星" textFill="BLUE" underline="true" wrapText="true">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                            <opaqueInsets>
-                                <Insets />
-                            </opaqueInsets>
-                        </Label>
-                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBXiaomiClick" text="小米" textFill="BLUE" underline="true" wrapText="true">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                            <opaqueInsets>
-                                <Insets />
-                            </opaqueInsets>
-                        </Label>
-                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBOppoClick" text="OPPO" textFill="BLUE" underline="true" wrapText="true">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                            <opaqueInsets>
-                                <Insets />
-                            </opaqueInsets>
-                        </Label>
-                        <Label maxWidth="1.7976931348623157E308" onMouseClicked="#onUSBVivoClick" text="VIVO" textFill="BLUE" underline="true" wrapText="true">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                            <opaqueInsets>
-                                <Insets />
-                            </opaqueInsets>
+                            <VBox.margin>
+                                <Insets top="-8.0" />
+                            </VBox.margin>
                         </Label>
                     </children>
                     <VBox.margin>
                         <Insets top="-8.0" />
                     </VBox.margin>
-                </HBox>
+                </VBox>
+
                 <AnchorPane VBox.vgrow="ALWAYS">
                     <children>
                         <HBox alignment="CENTER" spacing="16.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                             <children>
-                                <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../static/logo.jpg" />
-                                    </image>
-                                </ImageView>
-                                <VBox spacing="8.0">
+                                <VBox alignment="CENTER" spacing="8.0">
                                     <children>
-                                        <Label text="成都小蓝科技有限责任公司">
-                                            <font>
-                                                <Font size="16.0" />
-                                            </font>
-                                        </Label>
-                                        <Label text="网址：http://www.cdblue.cn    电话：17898229979" />
+                                        <Label text="在线客服：19950207822" />
+                                        <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                                <Image url="@../static/ic_wx_qr_code.jpg" />
+                                            </image>
+                                        </ImageView>
+                              <Label text="微信二维码" />
                                     </children>
                                 </VBox>
                             </children>
