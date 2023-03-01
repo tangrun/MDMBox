@@ -482,6 +482,8 @@ public class MainController extends BaseController {
                     //	at com.android.commands.dpm.Dpm.main(Dpm.java:41)
                     //	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
                     //	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:316)
+                }else if (result.msg.contains("is being removed")){
+                    resultWrapper.resultMsg = "激活失败，应用已取消激活，请打开应用并启用设备管理器。或在设置中搜索 设备管理器，找到当前应用并启用。";
                 }
             }
 
