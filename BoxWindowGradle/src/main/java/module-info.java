@@ -7,8 +7,9 @@ module com.tangrun.mdm.boxwindow {
     requires org.apache.logging.log4j;
     requires java.naming;
     requires commons.exec;
-    requires com.h2database;
+//    requires com.h2database;
     requires java.sql;
+    requires java.desktop;
 
     opens com.tangrun.mdm.boxwindow.core to javafx.graphics;
     opens com.tangrun.mdm.boxwindow.core.context to javafx.graphics;

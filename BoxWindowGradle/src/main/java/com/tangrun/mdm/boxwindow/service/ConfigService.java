@@ -3,6 +3,7 @@ package com.tangrun.mdm.boxwindow.service;
 import com.google.gson.Gson;
 import com.tangrun.mdm.boxwindow.core.LifecycleEventListener;
 import com.tangrun.mdm.boxwindow.core.LifecycleState;
+//import com.tangrun.mdm.boxwindow.dao.AppConfigService;
 import com.tangrun.mdm.boxwindow.dao.AppConfigService;
 import com.tangrun.mdm.boxwindow.pojo.Config;
 import com.tangrun.mdm.boxwindow.pojo.ConfigWrapper;
@@ -13,6 +14,9 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 @Log4j2
 public class ConfigService implements LifecycleEventListener {
@@ -29,6 +33,49 @@ public class ConfigService implements LifecycleEventListener {
 
     }
 
+    private Map<String, String> dataMap;
+
+    public Map<String, String> getMap() {
+        if (dataMap != null) {
+            return dataMap;
+        }
+        dataMap = new HashMap<>();
+        File file = new File(getDataPath() + File.separator + "data");
+        if (Utils.createFileOrExists(file)) {
+            try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+                while (bufferedReader.ready()) {
+                    String s1 = bufferedReader.readLine();
+                    int i = s1.indexOf("=");
+                    if (i > 0) {
+                        String key = s1.substring(0, i);
+                        String value = s1.substring(i + 1);
+                        dataMap.put(key, value);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return dataMap;
+    }
+
+    public void saveMap() {
+        File file = new File(getDataPath() + File.separator + "data");
+        if (!Utils.createFileOrExists(file)) {
+            return;
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Map.Entry<String, String> entry : dataMap.entrySet()) {
+            stringBuilder.append(entry.getKey()).append("=").append(entry.getValue()).append("\n");
+        }
+        try (FileWriter fileWriter = new FileWriter(file)) {
+            fileWriter.write(stringBuilder.toString());
+            fileWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     ConfigWrapper configWrapper;
 
     public ConfigWrapper getConfig() {
@@ -38,16 +85,12 @@ public class ConfigService implements LifecycleEventListener {
     }
 
     public boolean saveConfig(String msg) {
-        File configFile = new File("license.txt");
-        if (!configFile.exists()) {
-            try {
-                if (!configFile.createNewFile()) {
-                    return false;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false;
-            }
+        return writeToFile(msg, new File(getLicensePath()));
+    }
+
+    public boolean writeToFile(String msg, File configFile) {
+        if (!Utils.createFileOrExists(configFile)) {
+            return false;
         }
 
         FileWriter fileWriter = null;
@@ -76,23 +119,34 @@ public class ConfigService implements LifecycleEventListener {
         if (state == LifecycleState.OnInit) {
 
         } else if (state == LifecycleState.OnReady) {
-//            AppConfigService.setAppUseTime();
+            AppConfigService.setAppUseTime();
         } else if (state == LifecycleState.OnRelease) {
             AppConfigService.setAppUseTime();
         }
     }
 
+    private static String getDataPath() {
+        return System.getProperty("user.home")
+                + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "激活助手";
+    }
+
+    private static String getLicensePath() {
+        return getDataPath() + File.separator + "license.txt";
+    }
+
     private ConfigWrapper getConfigWrapper() {
+
+
         ConfigWrapper configWrapper = new ConfigWrapper();
         String content = null;
         {
-            File configFile = new File("license.txt");
-            if (configFile.exists() && configFile.isFile()) {
+            File configFile = new File(getLicensePath());
+            if (Utils.createFileOrExists(configFile)){
                 content = Utils.readFile(configFile);
             }
         }
         if (content == null) {
-            configWrapper.setMsg("license未找到，请复制设备ID给软件提供者以获取license.txt文件，然后放到软件运行目录下再启动");
+            configWrapper.setMsg("请右键以管理员方式启动软件");
         } else {
             Config config = null;
             try {

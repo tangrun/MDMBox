@@ -5,12 +5,12 @@ import com.tangrun.mdm.boxwindow.core.BaseController;
 import com.tangrun.mdm.boxwindow.core.LifecycleComposeEvent;
 import com.tangrun.mdm.boxwindow.core.LifecycleEventListener;
 import com.tangrun.mdm.boxwindow.core.LifecycleState;
+//import com.tangrun.mdm.boxwindow.dao.AppConfigService;
+//import com.tangrun.mdm.boxwindow.dao.DeviceLogService;
 import com.tangrun.mdm.boxwindow.dao.AppConfigService;
-import com.tangrun.mdm.boxwindow.dao.DeviceLogService;
 import com.tangrun.mdm.boxwindow.service.ConfigService;
-import com.tangrun.mdm.boxwindow.service.DBService;
+//import com.tangrun.mdm.boxwindow.service.DBService;
 import com.tangrun.mdm.boxwindow.shell.core.ShellExecuteLogger;
-import com.tangrun.mdm.boxwindow.dao.entity.DeviceLogEntity;
 import com.tangrun.mdm.boxwindow.pojo.Config;
 import com.tangrun.mdm.boxwindow.pojo.ConfigWrapper;
 import com.tangrun.mdm.boxwindow.pojo.DeviceWrapper;
@@ -55,10 +55,14 @@ public class MainController extends BaseController {
     /**
      * 关闭账号循环检测次数
      */
-    private static final int config_hide_account_package = 5;
+    private static final int config_hide_account_count = 5;
     private static final long config_refresh_device_interval_time = 1000;
 
-    private static boolean check_vivo_device_owner = true;
+    private static boolean config_check_vivo_device_owner = false;
+    /**
+     * 隐藏账号获取时 type 因为不一定是包名 而且看adb源码得知会报错 所以 一般不用
+     */
+    private static boolean config_hide_account_type = false;
 
     @FXML
     public Label tvDeviceInfo;
@@ -88,12 +92,37 @@ public class MainController extends BaseController {
      */
     private DeviceWrapper connectedDevice;
 
-    private void showInputLicense(String msg) {
+    private void showInputLicense() {
+        ButtonType btSave = new ButtonType("保存");
+        ButtonType btExit = new ButtonType("退出");
+        Alert alert = new Alert(Alert.AlertType.NONE, null, btSave, btExit);
+        alert.setTitle("输入license");
+        DialogPane dialogPane = alert.getDialogPane();
+        TextArea textArea = new TextArea();
+        textArea.setWrapText(true);
+        textArea.setEditable(true);
+        dialogPane.setContent(textArea);
+        Optional<ButtonType> optional = showAlertAndAwait(alert);
+        if (optional.isPresent() && optional.get() == btSave) {
+            String text = textArea.getText();
+            boolean b = ConfigService.getInstance().saveConfig(text);
+            if (b) {
+                showTipDialog("请重启软件生效");
+                getContext().getApplicationContext()
+                        .exitApp();
+            } else {
+                File file = new File("");
+                showTipDialog("保存失败，请手动复制license.txt到" + file.getAbsolutePath() + "目录下");
+            }
+        }
+    }
+
+    private void showInputLicenseTip(String msg) {
         if (!Platform.isFxApplicationThread()) {
             runUIThread(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
-                    showInputLicense(msg);
+                    showInputLicenseTip(msg);
                     return null;
                 }
             });
@@ -105,26 +134,7 @@ public class MainController extends BaseController {
         if (optional.isPresent()) {
             ButtonType buttonType = optional.get();
             if (buttonType == btLicense) {
-                ButtonType btSave = new ButtonType("保存");
-                Alert alert = new Alert(Alert.AlertType.NONE, null, btSave, btExit);
-                alert.setTitle("输入license");
-                DialogPane dialogPane = alert.getDialogPane();
-                TextArea textArea = new TextArea();
-                textArea.setWrapText(true);
-                textArea.setEditable(true);
-                dialogPane.setContent(textArea);
-                optional = showAlertAndAwait(alert);
-                if (optional.get() == btSave) {
-                    String text = textArea.getText();
-                    boolean b = ConfigService.getInstance().saveConfig(text);
-                    if (b) {
-                        showTipDialog("请重启软件生效");
-                    } else {
-                        File file = new File("");
-                        showTipDialog("保存失败，请手动复制license.txt到" +file.getAbsolutePath() + "目录下");
-                    }
-                }
-                return;
+                showInputLicense();
             }
         }
     }
@@ -134,7 +144,7 @@ public class MainController extends BaseController {
 
         log.debug("main controller initialLazy");
 
-        tvTitle.setText(BuildConfig.appName + " " + BuildConfig.appVersion);
+        tvTitle.setText(BuildConfig.appName);
 
         showLoadingDialog("初始化中...");
 
@@ -151,15 +161,15 @@ public class MainController extends BaseController {
                             IOService.getInstance().execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (!DBService.getInstance().initTable()) {
-                                        showTipDialog("数据初始化失败或已在运行中");
-                                        getContext().getApplicationContext().exitApp();
-                                        return;
-                                    }
+//                                    if (!DBService.getInstance().initTable()) {
+//                                        showTipDialog("数据初始化失败或已在运行中");
+//                                        getContext().getApplicationContext().exitApp();
+//                                        return;
+//                                    }
 
                                     ConfigWrapper configWrapper = ConfigService.getInstance().getConfig();
                                     if (configWrapper.getConfig() == null) {
-                                        showInputLicense(configWrapper.getMsg());
+                                        showInputLicenseTip(configWrapper.getMsg());
                                         getContext().getApplicationContext()
                                                 .exitApp();
                                         return;
@@ -235,6 +245,7 @@ public class MainController extends BaseController {
     }
 
 
+    protected String RESULT_fail_uninstall_app = "还未安装应用";
     protected String RESULT_fail_shell_error = "操作失败，请检查设备连接再进行激活";
     protected String RESULT_fail_multi_user = "激活失败，请关闭系统分身/应用双开等多开功能后再试";
     protected String RESULT_fail_xiaomi_no_manager_device_admins_permisiion = "激活失败，小米用户请手动在系统设置=>开发者设置=>开启“USB 调试（安全设置）”，如仍不可以请关闭“MIUI 优化”";
@@ -275,6 +286,17 @@ public class MainController extends BaseController {
                     resultWrapper.resultMsg = "应用已激活";
                 } else
                     resultWrapper.resultMsg = "已经有激活的应用了\n" + result.data.getPkgName();
+                return resultWrapper;
+            }
+
+            ShellApiExecResult<List<String>> packageList = adbShell.getPackageList();
+            if (!packageList.success) {
+                log.error("get packagelist error. {}", result.msg);
+                resultWrapper.resultMsg = RESULT_fail_shell_error;
+                return resultWrapper;
+            }
+            if (!packageList.data.contains(config.getPkgName())) {
+                resultWrapper.resultMsg = RESULT_fail_uninstall_app;
                 return resultWrapper;
             }
         }
@@ -328,19 +350,19 @@ public class MainController extends BaseController {
     private ResultWrapper startRegistration_recoveryHideApp() {
         ResultWrapper resultWrapper = new ResultWrapper();
 
-        List<DeviceLogEntity> deviceLogEntityList = DeviceLogService.getDeviceLogList(connectedDevice.getDeviceId());
-        if (!deviceLogEntityList.isEmpty()) {
-            for (DeviceLogEntity deviceLogEntity : deviceLogEntityList) {
-                log.info("set enabled 1: "+deviceLogEntity.getContent());
-                ShellApiExecResult<Void> result = adbShell.setEnabled(deviceLogEntity.getContent(), true);
-                if (result.success) {
-                    deviceLogEntity.setState(0);
-                    DeviceLogService.save(deviceLogEntity);
-                } else {
-                    log.warn("recovery hide app {} error, {}", deviceLogEntity.getContent(), result.msg);
-                }
-            }
-        }
+//        List<DeviceLogEntity> deviceLogEntityList = DeviceLogService.getDeviceLogList(connectedDevice.getDeviceId());
+//        if (!deviceLogEntityList.isEmpty()) {
+//            for (DeviceLogEntity deviceLogEntity : deviceLogEntityList) {
+//                log.info("set enabled 1: " + deviceLogEntity.getContent());
+//                ShellApiExecResult<Void> result = adbShell.setEnabled(deviceLogEntity.getContent(), true);
+//                if (result.success) {
+//                    deviceLogEntity.setState(0);
+//                    DeviceLogService.save(deviceLogEntity);
+//                } else {
+//                    log.warn("recovery hide app {} error, {}", deviceLogEntity.getContent(), result.msg);
+//                }
+//            }
+//        }
 
         ShellApiExecResult<List<String>> result = adbShell.getPackageList(PackageFilterParam.disabled);
         if (!result.success) {
@@ -352,7 +374,7 @@ public class MainController extends BaseController {
             log.warn("禁用app列表结果为空");
         } else {
             for (String s : result.data) {
-                log.info("set enabled 2: "+s);
+                log.info("set enabled 2: " + s);
                 ShellApiExecResult<Void> enabled = adbShell.setEnabled(s, true);
                 if (!enabled.success) {
                     log.warn("恢复 " + s + " 失败\n" + enabled.msg);
@@ -378,7 +400,7 @@ public class MainController extends BaseController {
         {
             log.info("registration. disable has account app.");
 
-            for (int i = 0; i < config_hide_account_package; i++) {
+            for (int i = 0; i < config_hide_account_count; i++) {
                 ShellApiExecResult<List<UserAccounts>> userAccounts = adbShell.getUserAccounts();
                 if (!userAccounts.success) {
                     log.error("get user account error. {}", userAccounts.msg);
@@ -395,17 +417,17 @@ public class MainController extends BaseController {
                         break;
                     }
                     for (ServiceInfo serviceInfo : accounts.serviceInfoList) {
-                        DeviceLogEntity deviceLogEntity = DeviceLogService.getDeviceLog(connectedDevice.getDeviceId(), serviceInfo.componentName.packageName);
-                        if (deviceLogEntity == null)
-                            deviceLogEntity = new DeviceLogEntity();
-                        deviceLogEntity.setDeviceId(connectedDevice.getDeviceId());
-                        deviceLogEntity.setContent(serviceInfo.componentName.packageName);
-                        deviceLogEntity.setContentType(0);
-                        deviceLogEntity.setState(1);
-                        DeviceLogService.save(deviceLogEntity);
+//                        DeviceLogEntity deviceLogEntity = DeviceLogService.getDeviceLog(connectedDevice.getDeviceId(), serviceInfo.componentName.packageName);
+//                        if (deviceLogEntity == null)
+//                            deviceLogEntity = new DeviceLogEntity();
+//                        deviceLogEntity.setDeviceId(connectedDevice.getDeviceId());
+//                        deviceLogEntity.setContent(serviceInfo.componentName.packageName);
+//                        deviceLogEntity.setContentType(0);
+//                        deviceLogEntity.setState(1);
+//                        DeviceLogService.save(deviceLogEntity);
 
 //                        ShellApiExecResult<Void> result = adbShell.setEnabled(serviceInfo.componentName.packageName+"/"+serviceInfo.componentName.className, false);
-                        log.info("set disabled pkg: "+serviceInfo.componentName.packageName);
+                        log.info("set disabled pkg: " + serviceInfo.componentName.packageName);
                         ShellApiExecResult<Void> result = adbShell.setEnabled(serviceInfo.componentName.packageName, false);
                         if (!result.success) {
                             resultWrapper.hideErrorList.add(serviceInfo.componentName.packageName);
@@ -418,27 +440,36 @@ public class MainController extends BaseController {
                         }
                     }
 
-                    for (Account account : accounts.accountList) {
-                        DeviceLogEntity deviceLogEntity = DeviceLogService.getDeviceLog(connectedDevice.getDeviceId(), account.type);
-                        if (deviceLogEntity == null)
-                            deviceLogEntity = new DeviceLogEntity();
-                        deviceLogEntity.setDeviceId(connectedDevice.getDeviceId());
-                        deviceLogEntity.setContent(account.type);
-                        deviceLogEntity.setContentType(1);
-                        deviceLogEntity.setState(1);
-                        DeviceLogService.save(deviceLogEntity);
+                    if (config_hide_account_type) {
+                        for (Account account : accounts.accountList) {
+//                            DeviceLogEntity deviceLogEntity = DeviceLogService.getDeviceLog(connectedDevice.getDeviceId(), account.type);
+//                            if (deviceLogEntity == null)
+//                                deviceLogEntity = new DeviceLogEntity();
+//                            deviceLogEntity.setDeviceId(connectedDevice.getDeviceId());
+//                            deviceLogEntity.setContent(account.type);
+//                            deviceLogEntity.setContentType(1);
+//                            deviceLogEntity.setState(1);
+//                            DeviceLogService.save(deviceLogEntity);
 
-                        log.info("set disabled type: "+account.type);
-                        ShellApiExecResult<Void> result = adbShell.setEnabled(account.type, false);
-                        if (!result.success) {
-                            log.warn("hide type {} error. {}", account.type, result.msg);
-                            resultWrapper.hideErrorList.add(account.type);
+                            log.info("set disabled type: " + account.type);
+                            ShellApiExecResult<Void> result = adbShell.setEnabled(account.type, false);
+                            if (!result.success) {
+                                log.warn("hide type {} error. {}", account.type, result.msg);
+                                resultWrapper.hideErrorList.add(account.type);
 //                            if (!showConfirmDialog("账号应用组件 "+account.type+" 处理失败，是否继续？\n继续有可能失败，请前往设置>账号 手动退出已登录账号")) {
 //                                return;
 //                            }
-                        } else {
-                            resultWrapper.hideErrorList.remove(account.type);
+                            } else {
+                                resultWrapper.hideErrorList.remove(account.type);
+                            }
                         }
+                    }
+                    if (count == 0 && i == 0 && !resultWrapper.hideErrorList.isEmpty()) {
+                        StringJoiner stringJoiner = new StringJoiner("\n", "\n", "");
+                        for (String s : resultWrapper.hideErrorList) {
+                            stringJoiner.add(s);
+                        }
+                        showTipDialog("可能需要暂时移除以下应用的账号记录：" + stringJoiner);
                     }
                 }
             }
@@ -448,11 +479,21 @@ public class MainController extends BaseController {
         {
             log.info("registration. set profile owner.");
 
+            adbShell.setDeviceAdmin(config.getComponent());
             String phoneManufacturer = connectedDevice.getPhoneManufacturer().toLowerCase(Locale.ROOT);
-            ShellApiExecResult<Void> result ;
-            if (check_vivo_device_owner && phoneManufacturer.contains("vivo")){
+            ShellApiExecResult<Void> result;
+            int androidVersion = Integer.MAX_VALUE;
+            try {
+                androidVersion = Integer.parseInt(connectedDevice.getAndroidVersion());
+            }catch (Exception e){
+
+            }
+            if (
+                    (config_check_vivo_device_owner && phoneManufacturer.contains("vivo"))
+                    || androidVersion < 7 // clearProfileOwner在7.0才有 所以只能是deviceOwner
+            ) {
                 result = adbShell.setDeviceOwner(config.getComponent());
-            }else {
+            } else {
                 result = adbShell.setProfileOwner(config.getComponent());
             }
 
@@ -465,7 +506,8 @@ public class MainController extends BaseController {
                     startRegistration_setProfileOwner(count + 1, resultWrapper);
                 } else if (result.msg.contains("users on the")) {
                     resultWrapper.resultMsg = RESULT_fail_multi_user;
-                } else if (result.msg.contains("android.permission.MANAGE_DEVICE_ADMINS")) {
+                } else if (result.msg.contains("android.permission.MANAGE_DEVICE_ADMINS")
+                        || result.msg.contains("Calling identity is not authorized")) {
                     resultWrapper.resultMsg = RESULT_fail_xiaomi_no_manager_device_admins_permisiion;
                 } else if (result.msg.contains("Unknown admin: ComponentInfo")) {
                     resultWrapper.resultMsg = "激活失败，请先安装应用";
@@ -482,7 +524,7 @@ public class MainController extends BaseController {
                     //	at com.android.commands.dpm.Dpm.main(Dpm.java:41)
                     //	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
                     //	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:316)
-                }else if (result.msg.contains("is being removed")){
+                } else if (result.msg.contains("is being removed")) {
                     resultWrapper.resultMsg = "激活失败，应用已取消激活，请打开应用并启用设备管理器。或在设置中搜索 设备管理器，找到当前应用并启用。";
                 }
             }
@@ -516,7 +558,8 @@ public class MainController extends BaseController {
             public void run() {
                 showLoadingDialog("执行操作中...");
                 stopRefreshDeviceTask();
-                onCancelClick();
+//                onCancelClick();
+                adbShell.startDeviceRegistrationAction();
                 startRefreshDeviceTask();
                 hideLoadingDialog();
             }
@@ -532,7 +575,7 @@ public class MainController extends BaseController {
         }
 
         // device owner
-        if(result.data==null){
+        if (result.data == null) {
             result = adbShell.getProfileOwner();
             if (!result.success) {
                 showTipDialog("查询设备已激活信息失败\n" + result.msg);
@@ -665,18 +708,26 @@ public class MainController extends BaseController {
         startRefreshDeviceTask();
     }
 
-    private String installApkPath;
+    private Optional<String> installApkPath = null;
 
     private void onInstallAPK() {
-        File file = installApkPath == null ? null : new File(installApkPath);
+        String lastPickFile = AppConfigService.getInstallApkPath();
+        if (lastPickFile == null) lastPickFile = "";
+        if (installApkPath == null) {
+            if (lastPickFile.isBlank()) {
+                installApkPath = Optional.empty();
+            } else {
+                installApkPath = Optional.of(lastPickFile);
+            }
+        }
 
-        if (file == null || !file.exists() || !file.isFile()) {
+        if (installApkPath.isEmpty()) {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("选择安装APK文件");
-            String apkPath = AppConfigService.getInstallApkPath();
-            log.info("install apk. initial file path: {}", apkPath);
-            if (apkPath != null) {
-                File file1 = new File(apkPath);
+
+            log.info("install apk. initial file path: {}", lastPickFile);
+            if (!lastPickFile.isBlank()) {
+                File file1 = new File(lastPickFile);
                 if (file1.exists()) {
                     if (file1.isFile()) {
                         fileChooser.setInitialDirectory(file1.getParentFile());
@@ -689,17 +740,18 @@ public class MainController extends BaseController {
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("APK Files", "*.apk"));
             File file1 = fileChooser.showOpenDialog(getContext().getStage());
             if (file1 != null) {
-                installApkPath = file1.getAbsolutePath();
+                installApkPath = Optional.of(file1.getAbsolutePath());
                 AppConfigService.setInstallApkPath(file1.getAbsolutePath());
                 onInstallAPK();
             }
             return;
         }
+        File file = new File(installApkPath.get());
 
         ButtonType pick = new ButtonType("重新选择");
         ButtonType buttonType = showTextAreaAlertAndShowAwait("请确定", "是否安装" + file.getName(), ButtonType.YES, ButtonType.NO, pick).get();
         if (buttonType == pick) {
-            installApkPath = null;
+            installApkPath = Optional.empty();
             onInstallAPK();
             return;
         }
@@ -751,7 +803,12 @@ public class MainController extends BaseController {
                 .append("\n")
                 .append("\n设备ID：").append(Utils.getMachineCode())
         ;
-        showTextAreaAlertAndShowAwait("关于", stringBuilder.toString(), ButtonType.OK);
+        ButtonType buttonType = new ButtonType("输入新授权码");
+        Optional<ButtonType> optional = showTextAreaAlertAndShowAwait("关于", stringBuilder.toString(), ButtonType.OK, buttonType);
+        if (optional.isPresent() && optional.get() == buttonType) {
+            showInputLicense();
+        }
+
     }
 
     //endregion

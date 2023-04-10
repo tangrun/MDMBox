@@ -145,6 +145,7 @@ public class ShellApiImpl implements ShellApi {
         return shellApply(String.format("adb shell dpm set-device-owner %s/%s", componentName.packageName, componentName.className), new Function<ShellExecResult, ShellApiExecResult<Void>>() {
             @Override
             public ShellApiExecResult<Void> apply(ShellExecResult shellAdbShellExecResult) {
+                System.out.println("set device owner: "+shellAdbShellExecResult.out);
                 if (shellAdbShellExecResult.existOk()) {
                     ShellApiExecResult<Void> result = ShellApiExecResult.success(null);
                     result.msg = "".equals(shellAdbShellExecResult.error) ? shellAdbShellExecResult.out : shellAdbShellExecResult.error;
@@ -155,10 +156,25 @@ public class ShellApiImpl implements ShellApi {
         });
     }
 
+    public ShellApiExecResult<Void> setDeviceAdmin(ComponentName componentName) {
+        return shellApply(String.format("adb shell dpm set-active-admin %s/%s", componentName.packageName, componentName.className), new Function<ShellExecResult, ShellApiExecResult<Void>>() {
+            @Override
+            public ShellApiExecResult<Void> apply(ShellExecResult shellAdbShellExecResult) {
+                System.out.println("set profile owner: "+shellAdbShellExecResult.out+" \n "+shellAdbShellExecResult.error);
+                if (shellAdbShellExecResult.existOk()) {
+                    ShellApiExecResult<Void> result = ShellApiExecResult.success(null);
+                    result.msg = "".equals(shellAdbShellExecResult.error) ? shellAdbShellExecResult.out : shellAdbShellExecResult.error;
+                    return result;
+                }
+                return ShellApiExecResult.fail(shellAdbShellExecResult.error);
+            }
+        });
+    }
     public ShellApiExecResult<Void> setProfileOwner(ComponentName componentName) {
         return shellApply(String.format("adb shell dpm set-profile-owner %s/%s", componentName.packageName, componentName.className), new Function<ShellExecResult, ShellApiExecResult<Void>>() {
             @Override
             public ShellApiExecResult<Void> apply(ShellExecResult shellAdbShellExecResult) {
+                System.out.println("set profile owner: "+shellAdbShellExecResult.out+" \n "+shellAdbShellExecResult.error);
                 if (shellAdbShellExecResult.existOk()) {
                     ShellApiExecResult<Void> result = ShellApiExecResult.success(null);
                     result.msg = "".equals(shellAdbShellExecResult.error) ? shellAdbShellExecResult.out : shellAdbShellExecResult.error;
@@ -170,10 +186,13 @@ public class ShellApiImpl implements ShellApi {
     }
 
     public ShellApiExecResult<Void> setEnabled(String packageName, boolean enable) {
-        return shellApply(String.format("adb shell pm %s %s", enable ? "enable" : "disable-user", packageName), new Function<ShellExecResult, ShellApiExecResult<Void>>() {
+        String s = enable ? "enable" : "disable-user";
+        String s1 = enable ? "enabled" : "disabled-user";
+        return shellApply(String.format("adb shell pm %s %s", s, packageName), new Function<ShellExecResult, ShellApiExecResult<Void>>() {
             @Override
             public ShellApiExecResult<Void> apply(ShellExecResult shellAdbShellExecResult) {
-                if (shellAdbShellExecResult.existOk()) {
+                System.out.println(packageName+" "+enable+" "+shellAdbShellExecResult.out+" | "+shellAdbShellExecResult.error);
+                if (shellAdbShellExecResult.existOk() && shellAdbShellExecResult.out.contains(s1)) {
                     return ShellApiExecResult.success(null);
                 }
                 return ShellApiExecResult.fail(shellAdbShellExecResult.error);

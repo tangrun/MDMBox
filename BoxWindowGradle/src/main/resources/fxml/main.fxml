@@ -90,7 +90,7 @@
                                 <Label text="开始激活" />
                             </children>
                         </VBox>
-                        <VBox alignment="CENTER" spacing="16.0" GridPane.columnIndex="2" visible="false">
+                        <VBox alignment="CENTER" spacing="16.0" GridPane.columnIndex="2">
                             <children>
                                 <ImageView fx:id="btCancel" onMouseClicked="#onCancelClick" pickOnBounds="true" preserveRatio="true">
                                     <image>

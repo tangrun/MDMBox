@@ -15,6 +15,22 @@ import java.util.List;
 @Log4j2
 public class Utils {
 
+    public static boolean createFileOrExists(File file) {
+        if (file.exists()) return true;
+        File parentFile = file.getParentFile();
+        if (!parentFile.exists() && !parentFile.mkdirs()) {
+            return false;
+        }
+        try {
+            if (!file.createNewFile()) {
+                return false;
+            }
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+
     public static String readFile(File file) {
         try (FileReader fileReader = new FileReader(file)) {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -28,7 +44,7 @@ public class Utils {
             }
             return stringBuilder.toString();
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
         }
         return null;
     }
@@ -48,7 +64,7 @@ public class Utils {
             }
             return strHexString.toString();
         } catch (NoSuchAlgorithmException e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
         }
         return null;
     }
@@ -103,7 +119,7 @@ public class Utils {
         try {
             return fxmlLoader.load();
         } catch (IOException e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
         }
         return null;
     }
@@ -126,7 +142,7 @@ public class Utils {
         public String getMotherboardSN() {
             String result = "";
             try {
-                File file = File.createTempFile("realhowto", ".vbs");
+                File file = File.createTempFile("realhowto"+System.currentTimeMillis(), ".vbs");
                 file.deleteOnExit();
                 FileWriter fw = new FileWriter(file);
 
@@ -141,7 +157,7 @@ public class Utils {
                 fw.close();
                 String path = file.getPath().replace("%20", " ");
 
-                Process p = Runtime.getRuntime().exec(new String[]{"cscript","//NoLogo",path});
+                Process p = Runtime.getRuntime().exec(new String[]{"cscript", "//NoLogo", path});
                 BufferedReader input = new BufferedReader(new InputStreamReader(
                         p.getInputStream()));
                 String line;
@@ -150,7 +166,7 @@ public class Utils {
                 }
                 input.close();
             } catch (Exception e) {
-                log.error(e.getMessage(),e);
+                log.error(e.getMessage(), e);
             }
             return result.trim();
         }
@@ -164,7 +180,7 @@ public class Utils {
         public String getHardDiskSN(String drive) {
             String result = "";
             try {
-                File file = File.createTempFile("realhowto", ".vbs");
+                File file = File.createTempFile("realhowto"+System.currentTimeMillis(), ".vbs");
                 file.deleteOnExit();
                 FileWriter fw = new FileWriter(file);
 
@@ -177,7 +193,7 @@ public class Utils {
                 fw.write(vbs);
                 fw.close();
                 String path = file.getPath().replace("%20", " ");
-                Process p = Runtime.getRuntime().exec(new String[]{"cscript","//NoLogo",path});
+                Process p = Runtime.getRuntime().exec(new String[]{"cscript", "//NoLogo", path});
                 BufferedReader input = new BufferedReader(new InputStreamReader(
                         p.getInputStream()));
                 String line;
@@ -186,7 +202,7 @@ public class Utils {
                 }
                 input.close();
             } catch (Exception e) {
-                log.error(e.getMessage(),e);
+                log.error(e.getMessage(), e);
             }
             return result.trim();
         }
@@ -195,7 +211,7 @@ public class Utils {
         public String getCPUSerial() {
             String result = "";
             try {
-                File file = File.createTempFile("tmp", ".vbs");
+                File file = File.createTempFile("tmp"+System.currentTimeMillis(), ".vbs");
                 file.deleteOnExit();
                 FileWriter fw = new FileWriter(file);
                 String vbs = "Set objWMIService = GetObject(\"winmgmts:\\\\.\\root\\cimv2\")\n"
@@ -209,7 +225,7 @@ public class Utils {
                 fw.write(vbs);
                 fw.close();
                 String path = file.getPath().replace("%20", " ");
-                Process p = Runtime.getRuntime().exec(new String[]{"cscript","//NoLogo",path});
+                Process p = Runtime.getRuntime().exec(new String[]{"cscript", "//NoLogo", path});
                 BufferedReader input = new BufferedReader(new InputStreamReader(
                         p.getInputStream()));
                 String line;
@@ -347,7 +363,7 @@ public class Utils {
                 process.destroy();
                 return out.toString();
             } catch (Exception e) {
-                log.error(e.getMessage(),e);
+                log.error(e.getMessage(), e);
             }
             return null;
         }

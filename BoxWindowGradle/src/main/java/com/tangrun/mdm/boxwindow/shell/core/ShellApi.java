@@ -49,6 +49,7 @@ public interface ShellApi {
      * @param componentName
      * @return
      */
+    ShellApiExecResult<Void> setDeviceAdmin(ComponentName componentName);
     ShellApiExecResult<Void> setProfileOwner(ComponentName componentName);
 
     ShellApiExecResult<Void> setDeviceOwner(ComponentName componentName);

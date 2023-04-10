@@ -13,7 +13,7 @@
 
 
         <build.app.name>激活助手</build.app.name>
-        <build.app.version>1.0.21104</build.app.version>
+        <build.app.version>1.0.30323</build.app.version>
         <build.mainClass>com.tangrun.mdm.boxwindow.Launcher</build.mainClass>
         <build.mainModuleClass>com.tangrun.mdm.boxwindow/com.tangrun.mdm.boxwindow.Launcher</build.mainModuleClass>
         <build.icon>${project.basedir}/src/main/resources/application.ico</build.icon>
@@ -90,13 +90,13 @@
         <!--            <version>31.1-jre</version>-->
         <!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.1.214</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libs/h2-2.1.214.jar</systemPath>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.h2database</groupId>-->
+<!--            <artifactId>h2</artifactId>-->
+<!--            <version>2.1.214</version>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${project.basedir}/libs/h2-2.1.214.jar</systemPath>-->
+<!--        </dependency>-->
 <!--        <dependency>-->
 <!--            <groupId>org.hibernate.orm</groupId>-->
 <!--            <artifactId>hibernate-core</artifactId>-->

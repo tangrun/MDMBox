@@ -4,7 +4,8 @@ package com.tangrun.mdm.boxwindow.dao;
 import com.tangrun.mdm.boxwindow.dao.core.SqlBinder;
 import com.tangrun.mdm.boxwindow.dao.entity.AppConfigEntity;
 import com.tangrun.mdm.boxwindow.dao.mapper.First2StringMapper;
-import com.tangrun.mdm.boxwindow.service.DBService;
+import com.tangrun.mdm.boxwindow.service.ConfigService;
+//import com.tangrun.mdm.boxwindow.service.DBService;
 
 import java.util.Optional;
 
@@ -46,17 +47,19 @@ public class AppConfigService {
 
 
     private static void setConfig(int id, Object value) {
-        AppConfigEntity appConfigEntity = new AppConfigEntity();
-        appConfigEntity.setId((long) id);
-        appConfigEntity.setValue(String.valueOf(value));
-
-        DBService.getInstance()
-                .executeUpdateResult(SqlBinder.bind(
-                        """
-                                update "t_app_config" set "value" = ? where "id" = ?;
-                                """,
-                        value, id
-                ));
+        ConfigService.getInstance().getMap().put(String.valueOf(id),String.valueOf(value));
+        ConfigService.getInstance().saveMap();
+//        AppConfigEntity appConfigEntity = new AppConfigEntity();
+//        appConfigEntity.setId((long) id);
+//        appConfigEntity.setValue(String.valueOf(value));
+//
+//        DBService.getInstance()
+//                .executeUpdateResult(SqlBinder.bind(
+//                        """
+//                                update "t_app_config" set "value" = ? where "id" = ?;
+//                                """,
+//                        value, id
+//                ));
 //        DBService.getInstance().openSession(new Consumer<Session>() {
 //            @Override
 //            public void accept(Session session) {
@@ -66,13 +69,15 @@ public class AppConfigService {
     }
 
     private static Optional<String> getConfig(int id) {
-        return DBService.getInstance()
-                .executeQueryFirst(SqlBinder.bind(
-                        """
-                                select "value" from "t_app_config" where "id" = ?;
-                                """,
-                        id
-                ), new First2StringMapper());
+        String s = ConfigService.getInstance().getMap().get(String.valueOf(id));
+        return Optional.ofNullable(s);
+//        return DBService.getInstance()
+//                .executeQueryFirst(SqlBinder.bind(
+//                        """
+//                                select "value" from "t_app_config" where "id" = ?;
+//                                """,
+//                        id
+//                ), new First2StringMapper());
     }
 
     private static String getConfigString(int id) {
