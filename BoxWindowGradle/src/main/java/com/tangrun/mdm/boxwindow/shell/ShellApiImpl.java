@@ -336,6 +336,16 @@ public class ShellApiImpl implements ShellApi {
         });
     }
 
+    @Override
+    public ShellApiExecResult<Void> reboot() {
+        return shellApply("adb reboot", new Function<ShellExecResult, ShellApiExecResult<Void>>() {
+            @Override
+            public ShellApiExecResult<Void> apply(ShellExecResult shellExecResult) {
+                return shellExecResult.existOk()?ShellApiExecResult.success(null):ShellApiExecResult.fail(shellExecResult.error);
+            }
+        });
+    }
+
     <T> T shellApply(String command, Function<ShellExecResult, T> function) {
         ShellExecResult result;
         if (interceptor != null) {

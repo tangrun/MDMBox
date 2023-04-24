@@ -226,8 +226,13 @@ public class MainController extends BaseController {
         }
         showLoadingDialog("激活中...\n\n激活过程中请勿断开手机连接！！！");
         ResultWrapper resultWrapper = startRegistration_setProfileOwner();
-        startRegistration_recoveryHideApp();
-        showTipDialog(resultWrapper.resultMsg);
+        if (resultWrapper.resultMsg.contains(RESULT_fail_multi_account) && showConfirmDialog("荣耀和VIVO手机请先退出荣耀、VIVO账号后再激活，如果不是该品牌或者已经退出帐号了，是否尝试重启手机后再激活一次？")) {
+            ShellApiExecResult<Void> result = adbShell.reboot();
+            showTipDialog(result.success ? "已重启，请稍等，开机后请再执行激活操作" : "自动重启失败，请手动重启");
+        } else {
+            startRegistration_recoveryHideApp();
+            showTipDialog(resultWrapper.resultMsg);
+        }
         hideLoadingDialog();
     }
 
@@ -485,12 +490,12 @@ public class MainController extends BaseController {
             int androidVersion = Integer.MAX_VALUE;
             try {
                 androidVersion = Integer.parseInt(connectedDevice.getAndroidVersion());
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
             if (
                     (config_check_vivo_device_owner && phoneManufacturer.contains("vivo"))
-                    || androidVersion < 7 // clearProfileOwner在7.0才有 所以只能是deviceOwner
+                            || androidVersion < 7 // clearProfileOwner在7.0才有 所以只能是deviceOwner
             ) {
                 result = adbShell.setDeviceOwner(config.getComponent());
             } else {

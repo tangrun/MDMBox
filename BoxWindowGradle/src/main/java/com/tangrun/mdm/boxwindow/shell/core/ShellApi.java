@@ -89,4 +89,6 @@ public interface ShellApi {
      */
     ShellApiExecResult<List<Device>> getDeviceList();
 
+    ShellApiExecResult<Void> reboot();
+
 }
