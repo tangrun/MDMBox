@@ -31,4 +31,8 @@ public class Config {
      */
     Long expireTime;
 
+    /**
+     * 调试日志
+     */
+    Boolean debug;
 }

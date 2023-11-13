@@ -161,9 +161,10 @@ public class ConfigService implements LifecycleEventListener {
                 configWrapper.setMsg("license无效");
             } else {
                 String machineCode = Utils.getMachineCode();
-                if (!machineCode.equals(config.getMachineId())) {
-                    configWrapper.setMsg("license在当前设备无法使用");
-                } else if (!AppConfigService.checkExpireTime(config.getExpireTime())) {
+//                if (!machineCode.equals(config.getMachineId())) {
+//                    configWrapper.setMsg("license在当前设备无法使用");
+//                } else
+                    if (!AppConfigService.checkExpireTime(config.getExpireTime())) {
                     configWrapper.setMsg("license已过期，请重新获取");
                 } else {
                     configWrapper.setConfig(config);

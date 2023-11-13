@@ -3,13 +3,9 @@
         <Property name="pattern">%d %-5p [%t] %C{2} (%F:%L) - %m%n</Property>
     </Properties>
     <Appenders>
-        <Console name="console" target="System.out">
+        <Console name="console" target="SYSTEM_OUT">
             <PatternLayout pattern="${pattern}"/>
         </Console>
-        <console name="Console" target="SYSTEM_OUT">
-            <!--PatternLayout :输出日志的格式,LOG4J2定义了输出代码,详见第二部分-->
-            <PatternLayout pattern="${pattern}"/>
-        </console>
 
         <RollingRandomAccessFile name="errorFile" fileName="log/error.log"
                                  filePattern="log/error_%d{yyyyMMdd}.log">

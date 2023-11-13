@@ -43,6 +43,7 @@ public class HelloController implements Initializable {
     public DateTimePicker etExpireTime;
     public Button btGenerate;
     public TextArea etLicense;
+    public CheckBox cbDebug;
     Popup popup;
     ListView<Config> listView;
     ObservableList<Config> configList = FXCollections.observableArrayList();
@@ -278,6 +279,7 @@ public class HelloController implements Initializable {
         config.setMachineId(etDeviceCode.getText().trim());
         config.setClsName(etComponent.getText().trim());
         config.setExpireTime(etExpireTime.dateTimeProperty().get().toInstant(ZoneOffset.ofHours(8)).toEpochMilli());
+        config.setDebug(cbDebug.isSelected());
 
         String json = new Gson().toJson(config);
         String base64 = Base64.getEncoder().encodeToString(json.getBytes(StandardCharsets.UTF_8));

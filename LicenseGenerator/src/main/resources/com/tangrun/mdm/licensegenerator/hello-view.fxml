@@ -12,6 +12,7 @@
 <!--<?import com.browniebytes.javafx.control.DateTimePicker?>-->
 
 
+<?import javafx.scene.control.CheckBox?>
 <VBox maxHeight="1.7976931348623157E308" prefWidth="420.0" spacing="16.0" fx:controller="com.tangrun.mdm.licensegenerator.HelloController" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" spacing="16.0">
@@ -81,6 +82,10 @@
             <Insets top="-10.0" />
          </VBox.margin>
       </DateTimePicker>
+      <Label text="是否输出调试日志*" />
+      <CheckBox fx:id="cbDebug">
+
+      </CheckBox>
       <Button fx:id="btGenerate" maxWidth="1.7976931348623157E308" onMouseClicked="#onGenerateClick" mnemonicParsing="false" text="生成">
          <VBox.margin>
             <Insets top="0.0" />

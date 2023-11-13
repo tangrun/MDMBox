@@ -32,6 +32,11 @@ public class Config {
      */
     Long expireTime;
 
+    /**
+     * 调试日志
+     */
+    Boolean debug;
+
 
     public ComponentName getComponent() {
         return new ComponentName(pkgName, clsName);

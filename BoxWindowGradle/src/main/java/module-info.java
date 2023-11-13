@@ -10,6 +10,7 @@ module com.tangrun.mdm.boxwindow {
 //    requires com.h2database;
     requires java.sql;
     requires java.desktop;
+    requires org.apache.logging.log4j.core;
 
     opens com.tangrun.mdm.boxwindow.core to javafx.graphics;
     opens com.tangrun.mdm.boxwindow.core.context to javafx.graphics;

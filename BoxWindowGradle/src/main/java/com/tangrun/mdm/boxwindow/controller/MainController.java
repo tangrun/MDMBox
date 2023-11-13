@@ -36,9 +36,24 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.StageStyle;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.appender.RandomAccessFileAppender;
+import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
+import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
+import org.apache.logging.log4j.core.config.AppenderRef;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -178,6 +193,29 @@ public class MainController extends BaseController {
                                     AppConfigService.setAppUseTime();
 
                                     config = configWrapper.getConfig();
+                                    if (config.getDebug() == Boolean.TRUE) {
+                                        LoggerContext context = (LoggerContext) LogManager.getContext(false);
+                                        Configuration configuration = context.getConfiguration();
+
+                                        // 配置一个 FileAppender，指定输出到文件
+                                        RollingRandomAccessFileAppender appender = RollingRandomAccessFileAppender.newBuilder()
+                                                .withFileName("./log/debug.log")
+                                                .withFilePattern("log/debug_%d{yyyyMMdd_HHmm}")
+                                                .setName("File")
+                                                .withPolicy(TimeBasedTriggeringPolicy.newBuilder()
+                                                        .withInterval(30)
+                                                        .build())
+                                                .setLayout(PatternLayout.newBuilder().withPattern("%d %-5p [%t] %C{2} (%F:%L) - %m%n").build())
+                                                .build();
+                                        appender.start();
+                                        configuration.addAppender(appender);
+                                        LoggerConfig rootLogger = configuration.getRootLogger();
+                                        rootLogger.setLevel(Level.DEBUG);
+                                        rootLogger.addAppender(appender, null, null);
+
+                                        context.updateLoggers();
+
+                                    }
 
                                     ShellApiImpl shellApiCmd = new ShellApiImpl(new ShellExecutorImpl());
                                     shellApiCmd.setInterceptor(new ShellExecuteLogger());
@@ -808,10 +846,36 @@ public class MainController extends BaseController {
                 .append("\n")
                 .append("\n设备ID：").append(Utils.getMachineCode())
         ;
-        ButtonType buttonType = new ButtonType("输入新授权码");
-        Optional<ButtonType> optional = showTextAreaAlertAndShowAwait("关于", stringBuilder.toString(), ButtonType.OK, buttonType);
-        if (optional.isPresent() && optional.get() == buttonType) {
-            showInputLicense();
+        ButtonType buttonType = new ButtonType("新授权码");
+        ButtonType debugType = new ButtonType("打开日志");
+
+        Optional<ButtonType> optional = null;
+        if (config.getDebug() == Boolean.TRUE) {
+            optional = showTextAreaAlertAndShowAwait("关于", stringBuilder.toString(), ButtonType.OK, buttonType, debugType);
+        } else {
+            optional = showTextAreaAlertAndShowAwait("关于", stringBuilder.toString(), ButtonType.OK, buttonType);
+        }
+        if (optional.isPresent()) {
+            if (optional.get() == buttonType)
+                showInputLicense();
+            else if (optional.get() == debugType) {
+                // 获取 LoggerContext
+                LoggerContext context = (LoggerContext) LogManager.getContext(false);
+
+                // 获取 RollingRandomAccessFileAppender
+                RollingRandomAccessFileAppender fileAppender = context.getConfiguration()
+                        .getAppender("File");
+
+                try {
+                    // 获取当前日志文件路径
+                    String currentLogFilePath = fileAppender.getFileName();
+                    File file = new File(currentLogFilePath);
+                    ProcessBuilder processBuilder = new ProcessBuilder("explorer.exe", "/select,", file.getAbsolutePath());
+                    processBuilder.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }

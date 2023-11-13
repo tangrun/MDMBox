@@ -9,13 +9,17 @@ import lombok.extern.slf4j.Slf4j;
 
 @Log4j2
 public class ShellExecuteLogger implements ShellInterceptor {
-//    Logger logger = LogManager.getLogger(ShellExecuteLogger.class);
+    //    Logger logger = LogManager.getLogger(ShellExecuteLogger.class);
     @Override
     public ShellExecResult execute(String command, ShellExecutor executor) {
         long time = System.currentTimeMillis();
         ShellExecResult execute = executor.execute(command);
-        log.debug("\ncmd execute: {}\n耗时: {}S, existValue: {}\nout:\n{}error:\n{}",
-                command, (1.0f * System.currentTimeMillis() - time) / 1000, execute.exitValue, execute.out, execute.error);
+        if ((command.equals("adb devices") || command.equals("adb shell getprop")) && execute.exitValue == 0) {
+        } else {
+            log.debug("\ncmd execute: {}\n耗时: {}S, existValue: {}\nout:\n{}error:\n{}",
+                    command, (1.0f * System.currentTimeMillis() - time) / 1000, execute.exitValue, execute.out, execute.error);
+        }
+
         return execute;
     }
 }

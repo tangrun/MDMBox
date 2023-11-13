@@ -13,7 +13,7 @@
 
 
         <build.app.name>激活助手</build.app.name>
-        <build.app.version>1.0.30424</build.app.version>
+        <build.app.version>1.0.31113</build.app.version>
         <build.mainClass>com.tangrun.mdm.boxwindow.Launcher</build.mainClass>
         <build.mainModuleClass>com.tangrun.mdm.boxwindow/com.tangrun.mdm.boxwindow.Launcher</build.mainModuleClass>
         <build.icon>${project.basedir}/src/main/resources/application.ico</build.icon>
@@ -30,14 +30,15 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- 编译时的编码 -->
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <argLine>UTF-8</argLine>
     </properties>
 
-<!--    <repositories>-->
-<!--        <repository>-->
-<!--            <id>projectRepository</id>-->
-<!--            <url>file://${basedir}/lib</url>-->
-<!--        </repository>-->
-<!--    </repositories>-->
+    <!--    <repositories>-->
+    <!--        <repository>-->
+    <!--            <id>projectRepository</id>-->
+    <!--            <url>file://${basedir}/lib</url>-->
+    <!--        </repository>-->
+    <!--    </repositories>-->
 
     <dependencies>
         <dependency>
@@ -69,11 +70,11 @@
             <systemPath>${project.basedir}/libs/commons-exec-1.3.jar</systemPath>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.apache.commons</groupId>-->
-<!--            <artifactId>commons-exec</artifactId>-->
-<!--            <version>1.3-local</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.commons</groupId>-->
+        <!--            <artifactId>commons-exec</artifactId>-->
+        <!--            <version>1.3-local</version>-->
+        <!--        </dependency>-->
         <!--        <dependency>-->
         <!--            <groupId>com.alibaba</groupId>-->
         <!--            <artifactId>fastjson</artifactId>-->
@@ -90,29 +91,31 @@
         <!--            <version>31.1-jre</version>-->
         <!--        </dependency>-->
 
-<!--        <dependency>-->
-<!--            <groupId>com.h2database</groupId>-->
-<!--            <artifactId>h2</artifactId>-->
-<!--            <version>2.1.214</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>${project.basedir}/libs/h2-2.1.214.jar</systemPath>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.hibernate.orm</groupId>-->
-<!--            <artifactId>hibernate-core</artifactId>-->
-<!--            <version>6.1.1.Final</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.h2database</groupId>-->
+        <!--            <artifactId>h2</artifactId>-->
+        <!--            <version>2.1.214</version>-->
+        <!--            <scope>system</scope>-->
+        <!--            <systemPath>${project.basedir}/libs/h2-2.1.214.jar</systemPath>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.hibernate.orm</groupId>-->
+        <!--            <artifactId>hibernate-core</artifactId>-->
+        <!--            <version>6.1.1.Final</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>2.18.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/log4j-core-2.18.0.jar</systemPath>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.slf4j</groupId>-->
-        <!--            <artifactId>slf4j-api</artifactId>-->
-        <!--            <version>2.0.0-alpha7</version>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.18.0</version>
+        </dependency>
 
         <!--        <dependency>-->
         <!--            <groupId>javax</groupId>-->
@@ -175,18 +178,18 @@
             <scope>provided</scope>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.junit.jupiter</groupId>-->
-<!--            <artifactId>junit-jupiter-api</artifactId>-->
-<!--            <version>${junit.version}</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.junit.jupiter</groupId>-->
-<!--            <artifactId>junit-jupiter-engine</artifactId>-->
-<!--            <version>${junit.version}</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.junit.jupiter</groupId>-->
+        <!--            <artifactId>junit-jupiter-api</artifactId>-->
+        <!--            <version>${junit.version}</version>-->
+        <!--            <scope>test</scope>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.junit.jupiter</groupId>-->
+        <!--            <artifactId>junit-jupiter-engine</artifactId>-->
+        <!--            <version>${junit.version}</version>-->
+        <!--            <scope>test</scope>-->
+        <!--        </dependency>-->
     </dependencies>
 
     <build>
@@ -310,15 +313,15 @@
                                 <argument>--type</argument>
                                 <argument>app-image</argument>
 
-<!--                                <argument>&#45;&#45;main-jar</argument>-->
-<!--                                <argument>${project.build.directory}/${project.artifactId}-${project.version}.jar-->
-<!--                                </argument>-->
-<!--                                <argument>&#45;&#45;main-class</argument>-->
-<!--                                <argument>${build.mainClass}</argument>-->
+                                <!--                                <argument>&#45;&#45;main-jar</argument>-->
+                                <!--                                <argument>${project.build.directory}/${project.artifactId}-${project.version}.jar-->
+                                <!--                                </argument>-->
+                                <!--                                <argument>&#45;&#45;main-class</argument>-->
+                                <!--                                <argument>${build.mainClass}</argument>-->
 
 
-<!--                                <argument>&#45;&#45;app-image</argument>-->
-<!--                                <argument>${project.build.directory}/app</argument>-->
+                                <!--                                <argument>&#45;&#45;app-image</argument>-->
+                                <!--                                <argument>${project.build.directory}/app</argument>-->
                                 <argument>--input</argument>
                                 <argument>${project.basedir}/app/</argument>
                                 <argument>--module-path</argument>
@@ -384,19 +387,17 @@
                                 <argument>--win-upgrade-uuid</argument>
                                 <argument>5e1be8ae-c950-45e8-b81d-4cfafffd7048</argument>
 
-<!--                                <argument>&#45;&#45;mac-package-identifier</argument>-->
-<!--                                <argument>5e1be8ae-c950-45e8-b81d-4cfafffd7048</argument>-->
-<!--                                <argument>&#45;&#45;mac-package-name</argument>-->
-<!--                                <argument>${build.app.name}</argument>-->
-<!--                                <argument>&#45;&#45;mac-signing-key-user-name</argument>-->
-<!--                                <argument>Cdblue</argument>-->
+                                <!--                                <argument>&#45;&#45;mac-package-identifier</argument>-->
+                                <!--                                <argument>5e1be8ae-c950-45e8-b81d-4cfafffd7048</argument>-->
+                                <!--                                <argument>&#45;&#45;mac-package-name</argument>-->
+                                <!--                                <argument>${build.app.name}</argument>-->
+                                <!--                                <argument>&#45;&#45;mac-signing-key-user-name</argument>-->
+                                <!--                                <argument>Cdblue</argument>-->
                             </arguments>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
-
 
 
         </plugins>
