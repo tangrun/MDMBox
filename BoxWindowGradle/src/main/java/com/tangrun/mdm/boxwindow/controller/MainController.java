@@ -264,9 +264,12 @@ public class MainController extends BaseController {
         }
         showLoadingDialog("激活中...\n\n激活过程中请勿断开手机连接！！！");
         ResultWrapper resultWrapper = startRegistration_setProfileOwner();
-        if (resultWrapper.resultMsg.contains(RESULT_fail_multi_account) && showConfirmDialog("荣耀和VIVO手机请先退出荣耀、VIVO账号后再激活，如果不是该品牌或者已经退出帐号了，是否尝试重启手机后再激活一次？")) {
-            ShellApiExecResult<Void> result = adbShell.reboot();
-            showTipDialog(result.success ? "已重启，请稍等，开机后请再执行激活操作" : "自动重启失败，请手动重启");
+        if (resultWrapper.resultMsg.contains(RESULT_fail_multi_account)) {
+            showTipDialog(resultWrapper.resultMsg);
+            if (showConfirmDialog("现在是否需要重启手机？")) {
+                ShellApiExecResult<Void> result = adbShell.reboot();
+                showTipDialog(result.success ? "已重启，请稍等，开机后请再执行激活操作" : "自动重启失败，请手动重启");
+            }
         } else {
             startRegistration_recoveryHideApp();
             showTipDialog(resultWrapper.resultMsg);
@@ -292,7 +295,7 @@ public class MainController extends BaseController {
     protected String RESULT_fail_shell_error = "操作失败，请检查设备连接再进行激活";
     protected String RESULT_fail_multi_user = "激活失败，请关闭系统分身/应用双开等多开功能后再试";
     protected String RESULT_fail_xiaomi_no_manager_device_admins_permisiion = "激活失败，小米用户请手动在系统设置=>开发者设置=>开启“USB 调试（安全设置）”，如仍不可以请关闭“MIUI 优化”";
-    protected String RESULT_fail_multi_account = "激活失败，请退出系统登录账户后再试，任然不行可前往 设置=》账号与同步，手动移除所有账号后再试";
+    protected String RESULT_fail_multi_account = "激活失败，请尝试以下操作后再重试\n1.荣耀和VIVO手机请先退出荣耀、VIVO账号；\n2.前往设置”账号与同步“，手动退出所有账号；\n3.重启手机\n\n";
     protected String RESULT_fail_has_other_app_set = "激活失败，已有其他软件被激活";
 
 
@@ -531,10 +534,20 @@ public class MainController extends BaseController {
             } catch (Exception e) {
 
             }
-            if (
-                    (config_check_vivo_device_owner && phoneManufacturer.contains("vivo"))
-                            || androidVersion < 7 // clearProfileOwner在7.0才有 所以只能是deviceOwner
-            ) {
+
+            boolean deviceOwner = false;
+            if (config_check_vivo_device_owner && phoneManufacturer.contains("vivo")) {
+                deviceOwner = true;
+            }
+            if (androidVersion < 7) {
+                // clearProfileOwner在7.0才有 所以只能是deviceOwner
+                deviceOwner = true;
+            }
+            if (androidVersion == 14 && showConfirmDialog("使用更高级别的激活方式？")) {
+                deviceOwner = true;
+            }
+
+            if (deviceOwner) {
                 result = adbShell.setDeviceOwner(config.getComponent());
             } else {
                 result = adbShell.setProfileOwner(config.getComponent());
@@ -543,7 +556,7 @@ public class MainController extends BaseController {
 
             resultWrapper.resultSuccess = false;
             if (result.msg != null) {
-                if (result.msg.contains("is already set")) {
+                if (result.msg.contains("is already set") || result.msg.contains("already has a")) {
                     resultWrapper.resultMsg = RESULT_fail_has_other_app_set;
                 } else if (result.msg.contains("there are already some accounts")) {
                     startRegistration_setProfileOwner(count + 1, resultWrapper);
