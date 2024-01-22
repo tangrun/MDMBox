@@ -215,13 +215,16 @@ public class ShellApiImpl implements ShellApi {
     String shell_package_list = "adb shell pm list package";
     Pattern patternPackage = Pattern.compile("package:(((?!package:).)+)");
 
-    public ShellApiExecResult<List<String>> getPackageList(PackageFilterParam... filters) {
+    public ShellApiExecResult<List<String>> getPackageList(String userId, PackageFilterParam... filters) {
         StringBuilder stringBuilder = new StringBuilder(shell_package_list);
         if (filters != null) {
             for (PackageFilterParam filter : filters) {
                 stringBuilder.append(" ")
                         .append(filter.value);
             }
+        }
+        if (userId != null && userId.trim().length() != 0){
+            stringBuilder.append(" --user ").append(userId.trim());
         }
         return shellApply(stringBuilder.toString(), new Function<ShellExecResult, ShellApiExecResult<List<String>>>() {
             @Override

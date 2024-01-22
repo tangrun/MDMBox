@@ -335,7 +335,8 @@ public class MainController extends BaseController {
                 return resultWrapper;
             }
 
-            ShellApiExecResult<List<String>> packageList = adbShell.getPackageList();
+
+            ShellApiExecResult<List<String>> packageList = adbShell.getPackageList(getMainUserId());
             if (!packageList.success) {
                 log.error("get packagelist error. {}", result.msg);
                 resultWrapper.resultMsg = RESULT_fail_shell_error;
@@ -393,6 +394,18 @@ public class MainController extends BaseController {
         return resultWrapper;
     }
 
+    private String getMainUserId() {
+        ShellApiExecResult<List<UserInfo>> result = adbShell.getUserList();
+        if (result.success) {
+            for (UserInfo datum : result.data) {
+                if (datum.isMain()) {
+                    return datum.id + "";
+                }
+            }
+        }
+        return null;
+    }
+
     private ResultWrapper startRegistration_recoveryHideApp() {
         ResultWrapper resultWrapper = new ResultWrapper();
 
@@ -410,7 +423,7 @@ public class MainController extends BaseController {
 //            }
 //        }
 
-        ShellApiExecResult<List<String>> result = adbShell.getPackageList(PackageFilterParam.disabled);
+        ShellApiExecResult<List<String>> result = adbShell.getPackageList(getMainUserId(), PackageFilterParam.disabled);
         if (!result.success) {
             log.warn("禁用app列表获取失败\n" + result.msg);
             resultWrapper.resultMsg = "获取临时清单失败\n" + result.msg;

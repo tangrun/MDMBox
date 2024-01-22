@@ -69,7 +69,7 @@ public interface ShellApi {
      * @param filters
      * @return
      */
-    ShellApiExecResult<List<String>> getPackageList(PackageFilterParam... filters);
+    ShellApiExecResult<List<String>> getPackageList(String userId,PackageFilterParam... filters);
 
     /**
      * 获取手机所有用户下的账户列表
