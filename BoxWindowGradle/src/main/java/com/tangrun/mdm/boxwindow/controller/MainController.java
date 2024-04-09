@@ -73,7 +73,6 @@ public class MainController extends BaseController {
     private static final int config_hide_account_count = 5;
     private static final long config_refresh_device_interval_time = 1000;
 
-    private static boolean config_check_vivo_device_owner = false;
     /**
      * 隐藏账号获取时 type 因为不一定是包名 而且看adb源码得知会报错 所以 一般不用
      */
@@ -189,7 +188,6 @@ public class MainController extends BaseController {
                                                 .exitApp();
                                         return;
                                     }
-
                                     AppConfigService.setAppUseTime();
 
                                     config = configWrapper.getConfig();
@@ -549,7 +547,8 @@ public class MainController extends BaseController {
             }
 
             boolean deviceOwner = false;
-            if (config_check_vivo_device_owner && phoneManufacturer.contains("vivo")) {
+            if (config.getAppName().equals("com.cdblue.awlm") && phoneManufacturer.contains("vivo")) {
+                // 内蒙古的vivo直接最高
                 deviceOwner = true;
             }
             if (androidVersion < 7) {

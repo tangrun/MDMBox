@@ -14,12 +14,12 @@ public class Launcher {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
-                log.error(e.getMessage(),e);
+                log.error(e.getMessage(), e);
             }
         });
 
         log.debug("launcher start javafx");
-        Application.launch(JavaFXApplication.class,args);
+        Application.launch(JavaFXApplication.class, args);
         log.debug("launcher exit");
     }
 }

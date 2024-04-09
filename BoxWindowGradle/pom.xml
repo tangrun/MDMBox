@@ -13,7 +13,7 @@
 
 
         <build.app.name>激活助手</build.app.name>
-        <build.app.version>1.0.40122</build.app.version>
+        <build.app.version>1.0.40409</build.app.version>
         <build.mainClass>com.tangrun.mdm.boxwindow.Launcher</build.mainClass>
         <build.mainModuleClass>com.tangrun.mdm.boxwindow/com.tangrun.mdm.boxwindow.Launcher</build.mainModuleClass>
         <build.icon>${project.basedir}/src/main/resources/application.ico</build.icon>
@@ -31,6 +31,7 @@
         <!-- 编译时的编码 -->
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <argLine>UTF-8</argLine>
+        <customLibPath>${project.basedir}/libs</customLibPath>
     </properties>
 
     <!--    <repositories>-->
@@ -67,7 +68,7 @@
             <artifactId>commons-exec</artifactId>
             <version>1.3</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/commons-exec-1.3.jar</systemPath>
+            <systemPath>${customLibPath}/commons-exec-1.3.jar</systemPath>
         </dependency>
 
         <!--        <dependency>-->
@@ -109,7 +110,7 @@
             <artifactId>log4j-core</artifactId>
             <version>2.18.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/log4j-core-2.18.0.jar</systemPath>
+            <systemPath>${customLibPath}/log4j-core-2.18.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
