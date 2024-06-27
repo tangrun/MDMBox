@@ -1,8 +1,11 @@
 package com.tangrun.mdm.boxwindow.shell.pojo;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * UserInfo{0:机主:c13} running
  */
+@Log4j2
 public class UserInfo {
     public static int FLAG_PRIMARY = 0x01;
     public static int FLAG_ADMIN = 0x02;
@@ -31,7 +34,15 @@ public class UserInfo {
         this.id = Integer.parseInt(id);
         this.name = name;
         this.state = state;
-        this.flags = Integer.parseInt(flags, 16);
+//        try {
+            this.flags = Integer.parseInt(flags, 16);
+//        }catch (Exception e){
+//            try {
+//                this.flags = Integer.parseInt(flags);
+//            }catch (Exception e1){
+//                log.error(e1.getMessage(),e1);
+//            }
+//        }
     }
 
 

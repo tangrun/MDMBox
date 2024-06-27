@@ -13,7 +13,7 @@
 
 
         <build.app.name>激活助手</build.app.name>
-        <build.app.version>1.0.40409</build.app.version>
+        <build.app.version>1.0.40627</build.app.version>
         <build.mainClass>com.tangrun.mdm.boxwindow.Launcher</build.mainClass>
         <build.mainModuleClass>com.tangrun.mdm.boxwindow/com.tangrun.mdm.boxwindow.Launcher</build.mainModuleClass>
         <build.icon>${project.basedir}/src/main/resources/application.ico</build.icon>

@@ -307,7 +307,7 @@ public class MainController extends BaseController {
 
             ShellApiExecResult<AdminOwnerInfo> result = adbShell.getDeviceOwner();
             if (!result.success) {
-                log.error("get profile owner error. {}", result.msg);
+                log.warn("get profile owner error. {}", result.msg);
                 resultWrapper.resultMsg = RESULT_fail_shell_error;
                 return resultWrapper;
             }
@@ -321,7 +321,7 @@ public class MainController extends BaseController {
 
             result = adbShell.getProfileOwner();
             if (!result.success) {
-                log.error("get device owner error. {}", result.msg);
+                log.warn("get device owner error. {}", result.msg);
                 resultWrapper.resultMsg = RESULT_fail_shell_error;
                 return resultWrapper;
             }
@@ -336,7 +336,7 @@ public class MainController extends BaseController {
 
             ShellApiExecResult<List<String>> packageList = adbShell.getPackageList(getMainUserId());
             if (!packageList.success) {
-                log.error("get packagelist error. {}", result.msg);
+                log.warn("get packagelist error. {}", result.msg);
                 resultWrapper.resultMsg = RESULT_fail_shell_error;
                 return resultWrapper;
             }
@@ -353,7 +353,7 @@ public class MainController extends BaseController {
 
             ShellApiExecResult<List<UserInfo>> userList = adbShell.getUserList();
             if (!userList.success) {
-                log.error("get user list error. {}", userList.msg);
+                log.warn("get user list error. {}", userList.msg);
                 resultWrapper.resultMsg = RESULT_fail_shell_error;
                 return resultWrapper;
             }
@@ -381,7 +381,7 @@ public class MainController extends BaseController {
                     ShellApiExecResult<Void> result = adbShell.removeUser(datum.id);
                     log.info("disable user result, id: {} name: {}, success: {}", datum.id, datum.name, result.success);
                     if (!result.success) {
-                        log.error("disable user error. {}", result.msg);
+                        log.warn("disable user error. {}", result.msg);
                         resultWrapper.resultMsg = "移除用户失败\n" + result.msg;
                         return resultWrapper;
                     }
@@ -444,7 +444,7 @@ public class MainController extends BaseController {
 
     private void startRegistration_setProfileOwner(int count, ResultWrapper resultWrapper) {
         if (count > config_reset_profile_owner_count) {
-            log.error("registration. retry timeout {}", count);
+            log.warn("registration. retry timeout {}", count);
             StringJoiner stringJoiner = new StringJoiner("\n", "\n", "");
             for (String s : resultWrapper.hideErrorList) {
                 stringJoiner.add(s);
@@ -452,7 +452,7 @@ public class MainController extends BaseController {
             resultWrapper.resultMsg = RESULT_fail_multi_account + stringJoiner;
             return;
         }
-        log.error("registration. set {}", count);
+        log.warn("registration. set {}", count);
         // hide有账号的应用
         {
             log.info("registration. disable has account app.");
@@ -460,7 +460,7 @@ public class MainController extends BaseController {
             for (int i = 0; i < config_hide_account_count; i++) {
                 ShellApiExecResult<List<UserAccounts>> userAccounts = adbShell.getUserAccounts();
                 if (!userAccounts.success) {
-                    log.error("get user account error. {}", userAccounts.msg);
+                    log.warn("get user account error. {}", userAccounts.msg);
                     resultWrapper.resultMsg = RESULT_fail_shell_error;
                     return;
                 }
@@ -555,9 +555,9 @@ public class MainController extends BaseController {
                 // clearProfileOwner在7.0才有 所以只能是deviceOwner
                 deviceOwner = true;
             }
-            if (androidVersion == 14 && showConfirmDialog("使用更高级别的激活方式？")) {
-                deviceOwner = true;
-            }
+//            if (androidVersion == 14 && showConfirmDialog("使用更高级别的激活方式？")) {
+//                deviceOwner = true;
+//            }
 
             if (deviceOwner) {
                 result = adbShell.setDeviceOwner(config.getComponent());
@@ -854,7 +854,7 @@ public class MainController extends BaseController {
         try {
             desktop.browse(file.toURI());
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.warn(e.getMessage(), e);
             showTipDialog("打开帮助页面失败\n" + e.getMessage());
         }
     }
