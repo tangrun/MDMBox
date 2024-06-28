@@ -34,15 +34,7 @@ public class UserInfo {
         this.id = Integer.parseInt(id);
         this.name = name;
         this.state = state;
-//        try {
-            this.flags = Integer.parseInt(flags, 16);
-//        }catch (Exception e){
-//            try {
-//                this.flags = Integer.parseInt(flags);
-//            }catch (Exception e1){
-//                log.error(e1.getMessage(),e1);
-//            }
-//        }
+        this.flags = Integer.parseUnsignedInt(flags, 16);
     }
 
 

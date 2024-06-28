@@ -383,6 +383,20 @@ public class MainController extends BaseController {
                     if (!result.success) {
                         log.warn("disable user error. {}", result.msg);
                         resultWrapper.resultMsg = "移除用户失败\n" + result.msg;
+                        if (datum.id == 999) {
+                            resultWrapper.resultMsg += "\n建议手动关闭应用双开后再试，最好同时杀死所有后台APP后重启手机再执行激活操作，可能需要重复2-3次";
+                        }
+                        String phoneManufacturer = connectedDevice.getPhoneManufacturer().toLowerCase();
+                        if (phoneManufacturer.contains("xiaomi")){
+                            if (datum.id == 10) {
+                                resultWrapper.resultMsg += "\n建议手动关闭系统分身后再试，最好同时杀死所有后台APP后重启手机再执行激活操作，可能需要重复2-3次";
+                            }
+                        }
+                        if (phoneManufacturer.contains("vivo")){
+                            if (datum.id == 666) {
+                                resultWrapper.resultMsg += "\nvivo手机建议手动关闭隐私空间|原子隐私系统后再试，最好同时杀死所有后台APP后重启手机再执行激活操作，可能需要重复2-3次";
+                            }
+                        }
                         return resultWrapper;
                     }
                 }
