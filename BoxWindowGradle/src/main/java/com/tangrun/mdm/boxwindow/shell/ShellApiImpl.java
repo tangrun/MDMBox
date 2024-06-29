@@ -87,7 +87,8 @@ public class ShellApiImpl implements ShellApi {
     }
 
     Pattern patternDevicePolicyProfileOwner = Pattern.compile(
-            "Profile Owner \\(User (.+?)\\):\\s+?admin=ComponentInfo\\{(.+?)\\/(.+?)\\}\\s+?name=(\\w*?)\\s+?package=(\\S+)");
+//            "Profile Owner \\(User (.+?)\\):\\s+?admin=ComponentInfo\\{(.+?)\\/(.+?)\\}\\s+?name=(\\w*?)\\s+?package=(\\S+)");
+            "Profile Owner \\(User (.+?)\\):\\s+?admin=ComponentInfo\\{(.+?)\\/(.+?)\\}");
 
     public ShellApiExecResult<AdminOwnerInfo> getProfileOwner() {
         return shellApply("adb shell dumpsys device_policy", new Function<ShellExecResult, ShellApiExecResult<AdminOwnerInfo>>() {
@@ -99,9 +100,10 @@ public class ShellApiImpl implements ShellApi {
                         Integer userId = Integer.parseInt(matcher.group(1));
                         String cPkgName = matcher.group(2);
                         String cClsName = matcher.group(3);
-                        String name = matcher.group(4);
-                        String pkgName = matcher.group(5);
-                        return ShellApiExecResult.success(new AdminOwnerInfo(userId, new ComponentName(cPkgName, cClsName), pkgName, name));
+//                        String name = matcher.group(4);
+//                        String pkgName = matcher.group(5);
+//                        return ShellApiExecResult.success(new AdminOwnerInfo(userId, new ComponentName(cPkgName, cClsName), pkgName, name));
+                        return ShellApiExecResult.success(new AdminOwnerInfo(userId, new ComponentName(cPkgName, cClsName), null, null));
                     }
                     return ShellApiExecResult.success(null);
                 }

@@ -312,10 +312,10 @@ public class MainController extends BaseController {
                 return resultWrapper;
             }
             if (result.data != null) {
-                if (Objects.equals(result.data.getPkgName(), config.getPkgName())) {
+                if (Objects.equals(result.data.getComponentName().packageName, config.getPkgName())) {
                     resultWrapper.resultMsg = "应用已激活";
                 } else
-                    resultWrapper.resultMsg = "已经有激活的应用了\n" + result.data.getPkgName();
+                    resultWrapper.resultMsg = "已经有激活的应用了\n" + result.data.getComponentName().packageName;
                 return resultWrapper;
             }
 
@@ -326,10 +326,10 @@ public class MainController extends BaseController {
                 return resultWrapper;
             }
             if (result.data != null) {
-                if (Objects.equals(result.data.getPkgName(), config.getPkgName())) {
+                if (Objects.equals(result.data.getComponentName().packageName, config.getPkgName())) {
                     resultWrapper.resultMsg = "应用已激活";
                 } else
-                    resultWrapper.resultMsg = "已经有激活的应用了\n" + result.data.getPkgName();
+                    resultWrapper.resultMsg = "已经有激活的应用了\n" + result.data.getComponentName().packageName;
                 return resultWrapper;
             }
 
@@ -393,8 +393,13 @@ public class MainController extends BaseController {
                             }
                         }
                         if (phoneManufacturer.contains("vivo")){
+                            // vivo的源自隐私系统 新版本采用多用户形式， 不移除也不影响激活 删是删不掉的
                             if (datum.id == 666) {
-                                resultWrapper.resultMsg += "\nvivo手机建议手动关闭隐私空间|原子隐私系统后再试，最好同时杀死所有后台APP后重启手机再执行激活操作，可能需要重复2-3次";
+                                if (!showConfirmDialog("注意！激活后将无法使用原子隐私系统，请提前备份其中资料，确定继续激活？")) {
+                                    resultWrapper.resultMsg = "操作已中止";
+                                    return resultWrapper;
+                                }
+                                continue;
                             }
                         }
                         return resultWrapper;
@@ -670,7 +675,7 @@ public class MainController extends BaseController {
             showTipDialog("设备没有查到有激活信息，不需要激活");
             return;
         }
-        if (!showConfirmDialog("是否取消激活？\n已激活APP信息：" + adminOwnerInfo.getPkgName())) {
+        if (!showConfirmDialog("是否取消激活？\n已激活APP信息：" + adminOwnerInfo.getComponentName().packageName)) {
             return;
         }
         ShellApiExecResult<Boolean> execResult = adbShell.removeActiveAdmin(adminOwnerInfo.getComponentName().packageName, adminOwnerInfo.getComponentName().className);
