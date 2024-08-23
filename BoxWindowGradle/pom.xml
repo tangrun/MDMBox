@@ -12,11 +12,11 @@
     <properties>
 
 
-        <build.app.name>激活助手</build.app.name>
+        <build.app.name>AndroidActivateAssistant</build.app.name>
         <build.app.version>1.0.40701</build.app.version>
         <build.mainClass>com.tangrun.mdm.boxwindow.Launcher</build.mainClass>
         <build.mainModuleClass>com.tangrun.mdm.boxwindow/com.tangrun.mdm.boxwindow.Launcher</build.mainModuleClass>
-        <build.icon>${project.basedir}/src/main/resources/application.ico</build.icon>
+        <build.icon>${project.basedir}\src\main\resources\application.ico</build.icon>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.9.0</junit.version>
@@ -305,26 +305,15 @@
                             <workingDirectory>${project.basedir}</workingDirectory>
                             <arguments>
                                 <argument>--name</argument>
-                                <argument>${build.app.name}</argument>
+                                <argument>AndroidActivateAssistant</argument>
                                 <argument>--app-version</argument>
-                                <argument>${build.app.version}</argument>
+                                <argument>${env.BUILD_APP_VERSION}</argument>
                                 <argument>--icon</argument>
                                 <argument>${build.icon}</argument>
 
                                 <argument>--type</argument>
                                 <argument>app-image</argument>
 
-                                <!--                                <argument>&#45;&#45;main-jar</argument>-->
-                                <!--                                <argument>${project.build.directory}/${project.artifactId}-${project.version}.jar-->
-                                <!--                                </argument>-->
-                                <!--                                <argument>&#45;&#45;main-class</argument>-->
-                                <!--                                <argument>${build.mainClass}</argument>-->
-
-
-                                <!--                                <argument>&#45;&#45;app-image</argument>-->
-                                <!--                                <argument>${project.build.directory}/app</argument>-->
-                                <argument>--input</argument>
-                                <argument>${project.basedir}/app/</argument>
                                 <argument>--module-path</argument>
                                 <argument>${project.build.directory}/lib/</argument>
                                 <argument>--module</argument>
@@ -348,7 +337,7 @@
                             <workingDirectory>${project.basedir}</workingDirectory>
                             <arguments>
                                 <argument>--name</argument>
-                                <argument>${build.app.name}</argument>
+                                <argument>AndroidActivateAssistant</argument>
                                 <argument>--app-version</argument>
                                 <argument>${build.app.version}</argument>
                                 <argument>--icon</argument>
@@ -357,43 +346,29 @@
                                 <argument>--type</argument>
                                 <argument>exe</argument>
 
-                                <!--                                <argument>&#45;&#45;main-jar</argument>-->
-                                <!--                                <argument>${project.build.directory}/${project.artifactId}-${project.version}.jar-->
-                                <!--                                </argument>-->
-                                <!--                                <argument>&#45;&#45;main-class</argument>-->
-                                <!--                                <argument>${build.mainClass}</argument>-->
-
-
-                                <!--                                <argument>&#45;&#45;app-image</argument>-->
-                                <!--                                <argument>${project.build.directory}/app</argument>-->
-                                <argument>--input</argument>
-                                <argument>${project.basedir}/app/</argument>
                                 <argument>--module-path</argument>
-                                <argument>${project.build.directory}/lib/</argument>
+                                <argument>${project.build.directory}\lib\</argument>
                                 <argument>--module</argument>
                                 <argument>${build.mainModuleClass}</argument>
 
                                 <argument>--temp</argument>
-                                <argument>${project.build.directory}/jPackageOutExeTemp</argument>
+                                <argument>${project.build.directory}\jPackageOutExeTemp</argument>
                                 <argument>--dest</argument>
-                                <argument>${project.build.directory}/jPackageOutExe</argument>
+                                <argument>${project.build.directory}\jPackageOutExe</argument>
 
                                 <argument>--win-dir-chooser</argument>
                                 <argument>--win-menu</argument>
+                                <argument>--win-menu-group</argument>
+                                <argument>激活助手</argument>
                                 <argument>--win-shortcut</argument>
+                                <argument>--win-shortcut-prompt</argument>
                                 <argument>--vendor</argument>
                                 <argument>cdblue</argument>
                                 <argument>--win-per-user-install</argument>
-                                <!--                                <argument>&#45;&#45;win-console</argument>-->
                                 <argument>--win-upgrade-uuid</argument>
                                 <argument>5e1be8ae-c950-45e8-b81d-4cfafffd7048</argument>
-
-                                <!--                                <argument>&#45;&#45;mac-package-identifier</argument>-->
-                                <!--                                <argument>5e1be8ae-c950-45e8-b81d-4cfafffd7048</argument>-->
-                                <!--                                <argument>&#45;&#45;mac-package-name</argument>-->
-                                <!--                                <argument>${build.app.name}</argument>-->
-                                <!--                                <argument>&#45;&#45;mac-signing-key-user-name</argument>-->
-                                <!--                                <argument>Cdblue</argument>-->
+                                <argument>--install-dir</argument>
+                                <argument>AndroidActivateAssistant</argument>
                             </arguments>
                         </configuration>
                     </execution>

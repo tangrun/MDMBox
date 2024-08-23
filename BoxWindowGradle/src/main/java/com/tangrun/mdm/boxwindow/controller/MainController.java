@@ -581,6 +581,9 @@ public class MainController extends BaseController {
 
             if (deviceOwner) {
                 result = adbShell.setDeviceOwner(config.getComponent());
+                if(!result.success){
+                    result = adbShell.setProfileOwner(config.getComponent());
+                }
             } else {
                 result = adbShell.setProfileOwner(config.getComponent());
             }
@@ -597,6 +600,8 @@ public class MainController extends BaseController {
                 } else if (result.msg.contains("android.permission.MANAGE_DEVICE_ADMINS")
                         || result.msg.contains("Calling identity is not authorized")) {
                     resultWrapper.resultMsg = RESULT_fail_xiaomi_no_manager_device_admins_permisiion;
+                } else if (result.msg.contains("User must be running and unlocked")) {
+                    resultWrapper.resultMsg = "激活失败，请确认是否解锁屏幕进入桌面，且激活过程保持常亮";
                 } else if (result.msg.contains("Unknown admin: ComponentInfo")) {
                     resultWrapper.resultMsg = "激活失败，请先安装应用";
                 } else if (result.msg.contains("KNOX_PROXY_ADMIN_INTERNAL")) {
