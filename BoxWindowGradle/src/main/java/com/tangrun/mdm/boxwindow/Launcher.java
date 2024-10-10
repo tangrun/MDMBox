@@ -23,6 +23,17 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
+import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
+import org.apache.logging.log4j.core.filter.ThresholdFilter;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -40,6 +51,29 @@ public class Launcher {
 //        System.out.println(Launcher.class.getResource("/fxml/main.fxml"));
 //        System.out.println(Launcher.class.getResource("/static"));
 //        System.out.println(Launcher.class.getResource("/log4j2.xml"));
+        {
+            LoggerContext context = (LoggerContext) LogManager.getContext(false);
+            Configuration configuration = context.getConfiguration();
+
+            // 配置一个 FileAppender，指定输出到文件
+            RollingRandomAccessFileAppender appender = RollingRandomAccessFileAppender.newBuilder()
+                    .withFileName(ConfigService.getDataDir()+ "log/error.log")
+                    .withFilePattern(ConfigService.getDataDir()+"/log/error_%d{yyyyMMdd_HHmm}")
+                    .setName("errorFile")
+                    .withPolicy(TimeBasedTriggeringPolicy.newBuilder()
+                            .withInterval(30)
+                            .build())
+                    .setFilter(ThresholdFilter.createFilter(Level.ERROR, Filter.Result.ACCEPT, Filter.Result.DENY))
+                    .setLayout(PatternLayout.newBuilder().withPattern("%d %-5p [%t] %C{2} (%F:%L) - %m%n").build())
+                    .build();
+            appender.start();
+            configuration.addAppender(appender);
+            LoggerConfig rootLogger = configuration.getRootLogger();
+            rootLogger.setLevel(Level.ERROR);
+            rootLogger.addAppender(appender, null, null);
+
+            context.updateLoggers();
+        }
 
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override

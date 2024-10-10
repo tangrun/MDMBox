@@ -38,17 +38,13 @@ import javafx.stage.StageStyle;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.FileAppender;
-import org.apache.logging.log4j.core.appender.RandomAccessFileAppender;
 import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
 import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
-import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.config.builder.api.AppenderRefComponentBuilder;
-import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.awt.*;
@@ -197,12 +193,13 @@ public class MainController extends BaseController {
 
                                         // 配置一个 FileAppender，指定输出到文件
                                         RollingRandomAccessFileAppender appender = RollingRandomAccessFileAppender.newBuilder()
-                                                .withFileName("./log/debug.log")
-                                                .withFilePattern("log/debug_%d{yyyyMMdd_HHmm}")
-                                                .setName("File")
+                                                .withFileName(ConfigService.getDataDir() + "log/debug.log")
+                                                .withFilePattern(ConfigService.getDataDir()+"log/debug_%d{yyyyMMdd_HHmm}")
+                                                .setName("debugFile")
                                                 .withPolicy(TimeBasedTriggeringPolicy.newBuilder()
                                                         .withInterval(30)
                                                         .build())
+                                                .setFilter(ThresholdFilter.createFilter(Level.DEBUG, Filter.Result.ACCEPT, Filter.Result.DENY))
                                                 .setLayout(PatternLayout.newBuilder().withPattern("%d %-5p [%t] %C{2} (%F:%L) - %m%n").build())
                                                 .build();
                                         appender.start();

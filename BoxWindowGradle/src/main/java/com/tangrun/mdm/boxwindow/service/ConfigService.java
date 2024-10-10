@@ -12,11 +12,9 @@ import lombok.extern.log4j.Log4j2;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 @Log4j2
 public class ConfigService implements LifecycleEventListener {
@@ -40,7 +38,7 @@ public class ConfigService implements LifecycleEventListener {
             return dataMap;
         }
         dataMap = new HashMap<>();
-        File file = new File(getDataPath() + File.separator + "data");
+        File file = new File(getDataDir() + "data");
         if (Utils.createFileOrExists(file)) {
             try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
                 while (bufferedReader.ready()) {
@@ -60,7 +58,7 @@ public class ConfigService implements LifecycleEventListener {
     }
 
     public void saveMap() {
-        File file = new File(getDataPath() + File.separator + "data");
+        File file = new File(getDataDir() + "data");
         if (!Utils.createFileOrExists(file)) {
             return;
         }
@@ -125,13 +123,13 @@ public class ConfigService implements LifecycleEventListener {
         }
     }
 
-    private static String getDataPath() {
+    public static String getDataDir() {
         return System.getProperty("user.home")
-                + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "激活助手";
+                + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "激活助手" + File.separator;
     }
 
     private static String getLicensePath() {
-        return getDataPath() + File.separator + "license.txt";
+        return getDataDir() + "license.txt";
     }
 
     private ConfigWrapper getConfigWrapper() {
@@ -141,7 +139,7 @@ public class ConfigService implements LifecycleEventListener {
         String content = null;
         {
             File configFile = new File(getLicensePath());
-            if (Utils.createFileOrExists(configFile)){
+            if (Utils.createFileOrExists(configFile)) {
                 content = Utils.readFile(configFile);
             }
         }
@@ -164,7 +162,7 @@ public class ConfigService implements LifecycleEventListener {
 //                if (!machineCode.equals(config.getMachineId())) {
 //                    configWrapper.setMsg("license在当前设备无法使用");
 //                } else
-                    if (!AppConfigService.checkExpireTime(config.getExpireTime())) {
+                if (!AppConfigService.checkExpireTime(config.getExpireTime())) {
                     configWrapper.setMsg("license已过期，请重新获取");
                 } else {
                     configWrapper.setConfig(config);
