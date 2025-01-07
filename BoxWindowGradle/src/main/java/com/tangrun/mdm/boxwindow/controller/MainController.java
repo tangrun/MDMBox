@@ -897,11 +897,11 @@ public class MainController extends BaseController {
         ButtonType debugType = new ButtonType("打开日志");
 
         Optional<ButtonType> optional = null;
-        if (config.getDebug() == Boolean.TRUE) {
+//        if (config.getDebug() == Boolean.TRUE) {
             optional = showTextAreaAlertAndShowAwait("关于", stringBuilder.toString(), ButtonType.OK, buttonType, debugType);
-        } else {
-            optional = showTextAreaAlertAndShowAwait("关于", stringBuilder.toString(), ButtonType.OK, buttonType);
-        }
+//        } else {
+//            optional = showTextAreaAlertAndShowAwait("关于", stringBuilder.toString(), ButtonType.OK, buttonType);
+//        }
         if (optional.isPresent()) {
             if (optional.get() == buttonType)
                 showInputLicense();
