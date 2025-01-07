@@ -51,29 +51,51 @@ public class Launcher {
 //        System.out.println(Launcher.class.getResource("/fxml/main.fxml"));
 //        System.out.println(Launcher.class.getResource("/static"));
 //        System.out.println(Launcher.class.getResource("/log4j2.xml"));
-        {
-            LoggerContext context = (LoggerContext) LogManager.getContext(false);
-            Configuration configuration = context.getConfiguration();
-
-            // 配置一个 FileAppender，指定输出到文件
-            RollingRandomAccessFileAppender appender = RollingRandomAccessFileAppender.newBuilder()
-                    .withFileName(ConfigService.getDataDir()+ "log/error.log")
-                    .withFilePattern(ConfigService.getDataDir()+"/log/error_%d{yyyyMMdd_HHmm}")
-                    .setName("errorFile")
-                    .withPolicy(TimeBasedTriggeringPolicy.newBuilder()
-                            .withInterval(30)
-                            .build())
-                    .setFilter(ThresholdFilter.createFilter(Level.ERROR, Filter.Result.ACCEPT, Filter.Result.DENY))
-                    .setLayout(PatternLayout.newBuilder().withPattern("%d %-5p [%t] %C{2} (%F:%L) - %m%n").build())
-                    .build();
-            appender.start();
-            configuration.addAppender(appender);
-            LoggerConfig rootLogger = configuration.getRootLogger();
-            rootLogger.setLevel(Level.ERROR);
-            rootLogger.addAppender(appender, null, null);
-
-            context.updateLoggers();
-        }
+//        {
+//            LoggerContext context = (LoggerContext) LogManager.getContext(false);
+//            Configuration configuration = context.getConfiguration();
+//            System.out.println("debugFilePath: "+((RollingRandomAccessFileAppender) configuration.getAppender("debugFile")).getFileName());
+//            System.out.println("errorFilePath: "+((RollingRandomAccessFileAppender) configuration.getAppender("errorFile")).getFileName());
+//
+//            {
+//                RollingRandomAccessFileAppender errorFileAppender = RollingRandomAccessFileAppender.newBuilder()
+//                        .withFileName(ConfigService.getLogDir() + "error.log")
+//                        .withFilePattern(ConfigService.getLogDir() + "error_%d{yyyyMMdd_HHmm}")
+//                        .setName("errorFile")
+//                        .withPolicy(TimeBasedTriggeringPolicy.newBuilder()
+//                                .withInterval(30)
+//                                .build())
+//                        .setFilter(ThresholdFilter.createFilter(Level.ERROR, Filter.Result.ACCEPT, Filter.Result.DENY))
+//                        .setLayout(PatternLayout.newBuilder().withPattern("%d %-5p [%t] %C{2} (%F:%L) - %m%n").build())
+//                        .build();
+//                errorFileAppender.start();
+//                configuration.addAppender(errorFileAppender);
+//                LoggerConfig rootLogger = configuration.getRootLogger();
+//                rootLogger.setLevel(Level.ERROR);
+//                rootLogger.addAppender(errorFileAppender, null, null);
+//            }
+//
+//
+//            {
+//                RollingRandomAccessFileAppender appender = RollingRandomAccessFileAppender.newBuilder()
+//                        .withFileName(ConfigService.getLogDir() + "debug.log")
+//                        .withFilePattern(ConfigService.getLogDir() + "debug_%d{yyyyMMdd_HHmm}")
+//                        .setName("debugFile")
+//                        .withPolicy(TimeBasedTriggeringPolicy.newBuilder()
+//                                .withInterval(30)
+//                                .build())
+//                        .setFilter(ThresholdFilter.createFilter(Level.DEBUG, Filter.Result.ACCEPT, Filter.Result.DENY))
+//                        .setLayout(PatternLayout.newBuilder().withPattern("%d %-5p [%t] %C{2} (%F:%L) - %m%n").build())
+//                        .build();
+//                appender.start();
+//                configuration.addAppender(appender);
+//                LoggerConfig rootLogger = configuration.getRootLogger();
+//                rootLogger.setLevel(Level.DEBUG);
+//                rootLogger.addAppender(appender, null, null);
+//            }
+//
+//            context.updateLoggers();
+//        }
 
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override

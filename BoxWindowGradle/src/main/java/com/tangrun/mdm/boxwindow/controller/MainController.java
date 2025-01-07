@@ -187,30 +187,30 @@ public class MainController extends BaseController {
                                     AppConfigService.setAppUseTime();
 
                                     config = configWrapper.getConfig();
-                                    if (config.getDebug() == Boolean.TRUE) {
-                                        LoggerContext context = (LoggerContext) LogManager.getContext(false);
-                                        Configuration configuration = context.getConfiguration();
-
-                                        // 配置一个 FileAppender，指定输出到文件
-                                        RollingRandomAccessFileAppender appender = RollingRandomAccessFileAppender.newBuilder()
-                                                .withFileName(ConfigService.getDataDir() + "log/debug.log")
-                                                .withFilePattern(ConfigService.getDataDir()+"log/debug_%d{yyyyMMdd_HHmm}")
-                                                .setName("debugFile")
-                                                .withPolicy(TimeBasedTriggeringPolicy.newBuilder()
-                                                        .withInterval(30)
-                                                        .build())
-                                                .setFilter(ThresholdFilter.createFilter(Level.DEBUG, Filter.Result.ACCEPT, Filter.Result.DENY))
-                                                .setLayout(PatternLayout.newBuilder().withPattern("%d %-5p [%t] %C{2} (%F:%L) - %m%n").build())
-                                                .build();
-                                        appender.start();
-                                        configuration.addAppender(appender);
-                                        LoggerConfig rootLogger = configuration.getRootLogger();
-                                        rootLogger.setLevel(Level.DEBUG);
-                                        rootLogger.addAppender(appender, null, null);
-
-                                        context.updateLoggers();
-
-                                    }
+//                                    if (config.getDebug() == Boolean.TRUE) {
+//                                        LoggerContext context = (LoggerContext) LogManager.getContext(false);
+//                                        Configuration configuration = context.getConfiguration();
+//
+//                                        // 配置一个 FileAppender，指定输出到文件
+//                                        RollingRandomAccessFileAppender appender = RollingRandomAccessFileAppender.newBuilder()
+//                                                .withFileName(ConfigService.getDataDir() + "log/debug.log")
+//                                                .withFilePattern(ConfigService.getDataDir()+"log/debug_%d{yyyyMMdd_HHmm}")
+//                                                .setName("debugFile")
+//                                                .withPolicy(TimeBasedTriggeringPolicy.newBuilder()
+//                                                        .withInterval(30)
+//                                                        .build())
+//                                                .setFilter(ThresholdFilter.createFilter(Level.DEBUG, Filter.Result.ACCEPT, Filter.Result.DENY))
+//                                                .setLayout(PatternLayout.newBuilder().withPattern("%d %-5p [%t] %C{2} (%F:%L) - %m%n").build())
+//                                                .build();
+//                                        appender.start();
+//                                        configuration.addAppender(appender);
+//                                        LoggerConfig rootLogger = configuration.getRootLogger();
+//                                        rootLogger.setLevel(Level.DEBUG);
+//                                        rootLogger.addAppender(appender, null, null);
+//
+//                                        context.updateLoggers();
+//
+//                                    }
 
                                     ShellApiImpl shellApiCmd = new ShellApiImpl(new ShellExecutorImpl());
                                     shellApiCmd.setInterceptor(new ShellExecuteLogger());
@@ -906,18 +906,25 @@ public class MainController extends BaseController {
             if (optional.get() == buttonType)
                 showInputLicense();
             else if (optional.get() == debugType) {
-                // 获取 LoggerContext
-                LoggerContext context = (LoggerContext) LogManager.getContext(false);
-
-                // 获取 RollingRandomAccessFileAppender
-                RollingRandomAccessFileAppender fileAppender = context.getConfiguration()
-                        .getAppender("File");
-
                 try {
                     // 获取当前日志文件路径
-                    String currentLogFilePath = fileAppender.getFileName();
-                    File file = new File(currentLogFilePath);
-                    ProcessBuilder processBuilder = new ProcessBuilder("explorer.exe", "/select,", file.getAbsolutePath());
+                    File logDir = new File(ConfigService.getLogDir());
+                    String openPath = logDir.getAbsolutePath();
+                    if (logDir.exists() && logDir.isDirectory()) {
+                        File[] files = logDir.listFiles();
+                        if (files != null && files.length > 0) {
+                            File file = null;
+                            for (File listFile : files) {
+                                if (file == null || listFile.lastModified() > file.lastModified()) {
+                                    file = listFile;
+                                }
+                            }
+                            if (file != null) {
+                                openPath = file.getAbsolutePath();
+                            }
+                        }
+                    }
+                    ProcessBuilder processBuilder = new ProcessBuilder("explorer.exe", "/select,", openPath);
                     processBuilder.start();
                 } catch (IOException e) {
                     e.printStackTrace();

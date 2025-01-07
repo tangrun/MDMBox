@@ -1,30 +1,41 @@
-<Configuration >
+<Configuration>
     <Properties>
         <Property name="pattern">%d %-5p [%t] %C{2} (%F:%L) - %m%n</Property>
+        <Property name="log_dir">$${sys:user.home}/AppData/Roaming/激活助手/log</Property>
     </Properties>
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout pattern="${pattern}"/>
         </Console>
 
-<!--        <RollingRandomAccessFile name="errorFile" fileName="${user.home}/AppData/Roaming/激活助手/log/error.log"-->
-<!--                                 filePattern="${user.home}/AppData/Roaming/激活助手/log/error_%d{yyyyMMdd}.log">-->
-<!--            <Filters>-->
-<!--                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>-->
-<!--            </Filters>-->
-<!--            <PatternLayout pattern="${pattern}" />-->
-<!--            <Policies>-->
-<!--                <TimeBasedTriggeringPolicy interval="1" />-->
-<!--                <SizeBasedTriggeringPolicy size="10 MB" />-->
-<!--            </Policies>-->
-<!--        </RollingRandomAccessFile>-->
+        <RollingRandomAccessFile name="debugFile" fileName="${log_dir}/debug.log"
+                                 filePattern="${log_dir}/debug_%d{yyyyMMdd}.log">
+            <Filters>
+                <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="${pattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="errorFile" fileName="${log_dir}/error.log"
+                                 filePattern="${log_dir}/error_%d{yyyyMMdd}.log">
+            <Filters>
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="${pattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+        </RollingRandomAccessFile>
     </Appenders>
     <Loggers>
-<!--        <Logger name="com.tangrun.mdm.boxwindow" level="debug"/>-->
-<!--        <Logger name="com.tangrun.mdm.boxwindow.shell.core.ShellExecuteLogger" level="info"/>-->
-        <Root level="info">
+        <Root level="debug">
             <AppenderRef ref="console"/>
-<!--            <AppenderRef ref="errorFile"/>-->
+            <AppenderRef ref="debugFile"/>
+            <AppenderRef ref="errorFile"/>
         </Root>
     </Loggers>
 </Configuration>

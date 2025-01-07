@@ -123,6 +123,10 @@ public class ConfigService implements LifecycleEventListener {
         }
     }
 
+    public static String getLogDir(){
+        return ConfigService.getDataDir() + "log"+ File.separator;
+    }
+
     public static String getDataDir() {
         return System.getProperty("user.home")
                 + File.separator + "AppData" + File.separator + "Roaming" + File.separator + "激活助手" + File.separator;
