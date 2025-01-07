@@ -21,9 +21,9 @@ public class UserInfo {
     public static int FLAG_SYSTEM = 0x800;
     public static int FLAG_PROFILE = 0x1000;
 
-    public Integer id;
+    public long id;
     public String name;
-    public Integer flags;
+    public long flags;
     public String state;
 
     public UserInfo(String id, String name, String flags) {
@@ -31,10 +31,10 @@ public class UserInfo {
     }
 
     public UserInfo(String id, String name, String flags,String state) {
-        this.id = Integer.parseInt(id);
+        this.id = Long.parseLong(id);
         this.name = name;
         this.state = state;
-        this.flags = Integer.parseUnsignedInt(flags, 16);
+        this.flags = Long.parseLong(flags, 16);
     }
 
 
