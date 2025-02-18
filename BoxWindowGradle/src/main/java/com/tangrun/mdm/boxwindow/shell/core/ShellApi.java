@@ -7,10 +7,11 @@ import java.util.Map;
 
 public interface ShellApi {
 
-    ShellApiExecResult<Map<String,String>> getProps();
+    ShellApiExecResult<Map<String, String>> getProps();
 
     /**
      * 安装apk
+     *
      * @param path
      * @return
      */
@@ -18,19 +19,22 @@ public interface ShellApi {
 
     /**
      * 发送action 打开激活页面
+     *
      * @return
      */
     ShellApiExecResult<Void> startDeviceRegistrationAction();
 
     /**
      * 移除手机用户
+     *
      * @param userId
      * @return
      */
-    ShellApiExecResult<Void> removeUser(Integer userId);
+    ShellApiExecResult<Void> removeUser(Long userId);
 
     /**
      * 移除设备admin
+     *
      * @param pkgName
      * @param className
      * @return
@@ -39,23 +43,28 @@ public interface ShellApi {
 
     /**
      * 获得当前profile owner
+     *
      * @return
      */
     ShellApiExecResult<AdminOwnerInfo> getProfileOwner();
+
     ShellApiExecResult<AdminOwnerInfo> getDeviceOwner();
 
     /**
      * 设置profile owner
+     *
      * @param componentName
      * @return
      */
     ShellApiExecResult<Void> setDeviceAdmin(ComponentName componentName);
+
     ShellApiExecResult<Void> setProfileOwner(ComponentName componentName);
 
     ShellApiExecResult<Void> setDeviceOwner(ComponentName componentName);
 
     /**
      * 设置应用 禁用/使用
+     *
      * @param packageName
      * @param enable
      * @return
@@ -66,25 +75,29 @@ public interface ShellApi {
 
     /**
      * 获取应用包名列表
+     *
      * @param filters
      * @return
      */
-    ShellApiExecResult<List<String>> getPackageList(String userId,PackageFilterParam... filters);
+    ShellApiExecResult<List<String>> getPackageList(String userId, PackageFilterParam... filters);
 
     /**
      * 获取手机所有用户下的账户列表
+     *
      * @return
      */
     ShellApiExecResult<List<UserAccounts>> getUserAccounts();
 
     /**
      * 获取手机所有用户列表
+     *
      * @return
      */
     ShellApiExecResult<List<UserInfo>> getUserList();
 
     /**
      * 获取设备列表
+     *
      * @return
      */
     ShellApiExecResult<List<Device>> getDeviceList();

@@ -313,6 +313,9 @@ public class MainController extends BaseController {
                     resultWrapper.resultMsg = "应用已激活";
                 } else
                     resultWrapper.resultMsg = "已经有激活的应用了\n" + result.data.getComponentName().packageName;
+                if (result.data.getComponentName().packageName.equals("com.samsung.knox.securefolder")) {
+                    resultWrapper.resultMsg += "\n可尝试将安全文件夹功能完全关闭之后再试";
+                }
                 return resultWrapper;
             }
 
@@ -327,6 +330,9 @@ public class MainController extends BaseController {
                     resultWrapper.resultMsg = "应用已激活";
                 } else
                     resultWrapper.resultMsg = "已经有激活的应用了\n" + result.data.getComponentName().packageName;
+                if (result.data.getComponentName().packageName.equals("com.samsung.knox.securefolder")) {
+                    resultWrapper.resultMsg += "\n可尝试将安全文件夹功能完全关闭之后再试";
+                }
                 return resultWrapper;
             }
 
@@ -380,7 +386,7 @@ public class MainController extends BaseController {
                     if (!result.success) {
                         log.warn("disable user error. {}", result.msg);
                         String phoneManufacturer = connectedDevice.getPhoneManufacturer().toLowerCase();
-                        if (phoneManufacturer.contains("vivo")){
+                        if (phoneManufacturer.contains("vivo")) {
                             // vivo的源自隐私系统 新版本采用多用户形式， 不移除也不影响激活 删是删不掉的
                             if (datum.id == 666) {
                                 if (!showConfirmDialog("注意！激活后将无法使用原子隐私系统，请提前备份其中资料，确定继续激活？")) {
@@ -395,7 +401,7 @@ public class MainController extends BaseController {
                         if (datum.id == 999) {
                             resultWrapper.resultMsg += "\n建议手动关闭应用双开后再试，最好同时杀死所有后台APP后重启手机再执行激活操作，可能需要重复2-3次";
                         }
-                        if (phoneManufacturer.contains("xiaomi")){
+                        if (phoneManufacturer.contains("xiaomi")) {
                             if (datum.id == 10) {
                                 resultWrapper.resultMsg += "\n建议手动关闭系统分身后再试，最好同时杀死所有后台APP后重启手机再执行激活操作，可能需要重复2-3次";
                             }
@@ -578,7 +584,7 @@ public class MainController extends BaseController {
 
             if (deviceOwner) {
                 result = adbShell.setDeviceOwner(config.getComponent());
-                if(!result.success){
+                if (!result.success) {
                     result = adbShell.setProfileOwner(config.getComponent());
                 }
             } else {
@@ -898,7 +904,7 @@ public class MainController extends BaseController {
 
         Optional<ButtonType> optional = null;
 //        if (config.getDebug() == Boolean.TRUE) {
-            optional = showTextAreaAlertAndShowAwait("关于", stringBuilder.toString(), ButtonType.OK, buttonType, debugType);
+        optional = showTextAreaAlertAndShowAwait("关于", stringBuilder.toString(), ButtonType.OK, buttonType, debugType);
 //        } else {
 //            optional = showTextAreaAlertAndShowAwait("关于", stringBuilder.toString(), ButtonType.OK, buttonType);
 //        }
